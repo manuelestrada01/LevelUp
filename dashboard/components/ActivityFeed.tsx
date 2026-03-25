@@ -44,7 +44,7 @@ const EVENT_ICON_COLORS: Record<ActivityEntry["type"], string> = {
 
 export default function ActivityFeed({ entries }: ActivityFeedProps) {
   return (
-    <div className="rounded-xl bg-[#1a2e1c] p-5 border border-[#1e3320]">
+    <div className="rounded-xl bg-[#0F2411] p-5 border border-[#1e3320]">
       <p className="mb-4 text-xs font-medium uppercase tracking-widest text-[#9aab8a]">
         Fragmentos de Actividad
       </p>

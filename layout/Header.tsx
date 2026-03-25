@@ -18,7 +18,7 @@ const SUBJECT_TABS: { id: Subject; label: string; href: string }[] = [
 
 export default function Header({ activeSubject, studentName }: HeaderProps) {
   return (
-    <header className="flex h-20 items-center justify-between border-b border-[#1e3320] bg-[#0d1a0f] px-6">
+    <header className="flex h-20 items-center justify-between border-b border-[#1e3320] bg-[#031706] px-6 shadow-[0_8px_20px_0px_rgba(0,0,0,0.6)]" style={{zIndex: 10, position: 'relative'}}>
       {/* Logo */}
       <div className="flex items-center gap-6">
         <span className="font-serif text-lg font-semibold text-[#c9a227] tracking-tight">

@@ -29,9 +29,9 @@ export default function Sidebar({ studentName, level, formativeClass }: SidebarP
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-[300px] flex-shrink-0 flex-col bg-[#1a2e1c] border-r border-[#1e3320]">
+    <aside className="flex h-screen w-[300px] flex-shrink-0 flex-col bg-[#031706] border-r border-[#1e3320]">
       {/* Student profile */}
-      <div className="flex items-center gap-3 px-4 py-5 border-b border-[#1e3320]">
+      <div className="flex items-center gap-3 px-4 py-5">
         <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-[#c9a227]/20 border border-[#c9a227]/30">
           <GraduationCap size={24} strokeWidth={1.5} className="text-[#c9a227]" />
         </div>

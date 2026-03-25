@@ -15,7 +15,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-[#0d1a0f]">
+    <div className="flex h-screen flex-col overflow-hidden bg-[#031706]">
       {/* Header — full width at top */}
       <Header
         activeSubject={MOCK_STUDENT.activeSubject}

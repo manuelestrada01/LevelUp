@@ -21,7 +21,7 @@ export default function StrikesCard({ strikes, blocked = false }: StrikesCardPro
       className={`rounded-xl p-5 border ${
         blocked
           ? "bg-[#c0392b]/10 border-[#c0392b]/30"
-          : "bg-[#1a2e1c] border-[#1e3320]"
+          : "bg-[#0F2411] border-[#1e3320]"
       }`}
     >
       {/* Header */}

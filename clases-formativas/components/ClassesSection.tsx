@@ -82,7 +82,7 @@ export default function ClassesSection({ activeClass }: ClassesSectionProps) {
               className={`relative flex w-[220px] flex-shrink-0 flex-col overflow-hidden rounded-xl border p-4 transition-colors ${
                 isActive
                   ? "border-[#c9a227]/60 bg-[#c9a227]/10"
-                  : "border-[#1e3320] bg-[#1a2e1c]"
+                  : "border-[#1e3320] bg-[#0F2411]"
               }`}
             >
               {/* Watermark icon */}

@@ -54,41 +54,39 @@ const MOCK_ACTIVE_TALENTS = ALL_TALENTS.filter((t) =>
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col">
+    <div className="w-full px-6 py-5 flex flex-col gap-4">
       {/* Hero */}
       <HeroSection
         studentName={MOCK_STUDENT.name}
         formativeClass={MOCK_STUDENT.formativeClass}
       />
 
-      <div className="w-full px-6 py-5 flex flex-col gap-4">
-        {/* Row 1: XP Card (wide) + Strikes (narrow) */}
-        <div className="grid grid-cols-[3fr_1fr] gap-4">
-          <XpCard
-            xp={MOCK_STUDENT.xp}
-            xpCurrentLevel={MOCK_STUDENT.xpCurrentLevel}
-            xpNextLevel={MOCK_STUDENT.xpNextLevel}
-            level={MOCK_STUDENT.level}
-            levelName={MOCK_STUDENT.levelName}
-            nextLevelName={MOCK_STUDENT.nextLevelName}
-            studentName={MOCK_STUDENT.name}
-            blocked={MOCK_STUDENT.blocked}
-          />
-          <StrikesCard
-            strikes={MOCK_STUDENT.strikes}
-            blocked={MOCK_STUDENT.blocked}
-          />
-        </div>
-
-        {/* Row 2: Activity (narrower) + Talents (wide) */}
-        <div className="grid grid-cols-[2fr_3fr] gap-4">
-          <ActivityFeed entries={MOCK_ACTIVITY} />
-          <TalentsCard talents={MOCK_ACTIVE_TALENTS} />
-        </div>
-
-        {/* Classes Formativas */}
-        <ClassesSection activeClass={MOCK_STUDENT.formativeClass} />
+      {/* Row 1: XP Card (wide) + Strikes (narrow) */}
+      <div className="grid grid-cols-[3fr_1fr] gap-4">
+        <XpCard
+          xp={MOCK_STUDENT.xp}
+          xpCurrentLevel={MOCK_STUDENT.xpCurrentLevel}
+          xpNextLevel={MOCK_STUDENT.xpNextLevel}
+          level={MOCK_STUDENT.level}
+          levelName={MOCK_STUDENT.levelName}
+          nextLevelName={MOCK_STUDENT.nextLevelName}
+          studentName={MOCK_STUDENT.name}
+          blocked={MOCK_STUDENT.blocked}
+        />
+        <StrikesCard
+          strikes={MOCK_STUDENT.strikes}
+          blocked={MOCK_STUDENT.blocked}
+        />
       </div>
+
+      {/* Row 2: Activity (narrower) + Talents (wide) */}
+      <div className="grid grid-cols-[2fr_3fr] gap-4">
+        <ActivityFeed entries={MOCK_ACTIVITY} />
+        <TalentsCard talents={MOCK_ACTIVE_TALENTS} />
+      </div>
+
+      {/* Classes Formativas */}
+      <ClassesSection activeClass={MOCK_STUDENT.formativeClass} />
     </div>
   );
 }

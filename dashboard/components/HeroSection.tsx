@@ -19,33 +19,33 @@ export default function HeroSection({ studentName, formativeClass }: HeroSection
 
   return (
     <div
-      className="relative w-full overflow-hidden"
-      style={{ minHeight: "260px" }}
+      className="relative w-full overflow-hidden rounded-xl border border-[#1e3320]"
+      style={{ minHeight: "400px" }}
     >
       {/* Background image layer */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('/assets/hero-bg.jpg')",
-          backgroundPosition: "center 30%",
+          backgroundImage: "url('/assets/images/bosque.png')",
+          backgroundPosition: "center 65%",
         }}
       />
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0d1a0f]/95 via-[#0d1a0f]/70 to-[#0d1a0f]/30" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0d1a0f]/80 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#031706]/80 via-[#031706]/40 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#031706]/50 via-transparent to-transparent" />
 
       {/* Content */}
       <div className="relative z-10 w-full flex h-full flex-col justify-center px-6 py-10">
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-[#9aab8a]">
+        <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-[#9aab8a]">
           Bienvenido de vuelta, {classLabel}
         </p>
-        <h1 className="font-serif text-4xl font-bold leading-tight text-[#f5f0e8] max-w-xl">
+        <h1 className="font-serif text-5xl font-bold leading-tight text-[#f5f0e8] max-w-2xl">
           Tu progreso en el nexo
           <br />
           técnico continúa,{" "}
           <em className="text-[#c9a227] not-italic font-semibold">{studentName}.</em>
         </h1>
-        <p className="mt-4 max-w-md text-sm leading-relaxed text-[#9aab8a]">
+        <p className="mt-4 max-w-lg text-base leading-relaxed text-[#9aab8a]">
           {CLASS_HERO_TEXT[formativeClass]}
         </p>
       </div>
