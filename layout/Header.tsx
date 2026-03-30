@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Bell } from "lucide-react";
 import { Subject } from "@/dashboard/types";
@@ -8,6 +9,7 @@ import { Subject } from "@/dashboard/types";
 interface HeaderProps {
   activeSubject: Subject;
   studentName: string;
+  studentImage?: string | null;
 }
 
 const SUBJECT_TABS: { id: Subject; label: string; href: string }[] = [
@@ -16,7 +18,7 @@ const SUBJECT_TABS: { id: Subject; label: string; href: string }[] = [
   { id: "rep3", label: "Tecnología de la Rep. 3", href: "/rep3" },
 ];
 
-export default function Header({ activeSubject, studentName }: HeaderProps) {
+export default function Header({ activeSubject, studentName, studentImage }: HeaderProps) {
   return (
     <header className="flex h-20 items-center justify-between border-b border-[#1e3320] bg-[#031706] px-6 shadow-[0_8px_20px_0px_rgba(0,0,0,0.6)]" style={{zIndex: 10, position: 'relative'}}>
       {/* Logo */}
@@ -55,9 +57,13 @@ export default function Header({ activeSubject, studentName }: HeaderProps) {
           <Bell size={16} strokeWidth={1.5} />
         </button>
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#c9a227]/20 border border-[#c9a227]/40 overflow-hidden">
-          <span className="text-[#c9a227] text-sm font-semibold font-serif">
-            {studentName.charAt(0)}
-          </span>
+          {studentImage ? (
+            <Image src={studentImage} alt={studentName} width={32} height={32} className="h-full w-full object-cover" />
+          ) : (
+            <span className="text-[#c9a227] text-sm font-semibold font-serif">
+              {studentName.charAt(0)}
+            </span>
+          )}
         </div>
       </div>
     </header>

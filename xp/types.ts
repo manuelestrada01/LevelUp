@@ -1,4 +1,4 @@
-export type ProductionType = "A4" | "A3" | "CAL" | "CAD" | "EVA" | "EVT";
+export type ProductionType = "A4" | "A3" | "CAL" | "MAQ" | "CAD" | "EVA" | "EVT";
 
 export type ActivityEventType =
   | "xp_base"

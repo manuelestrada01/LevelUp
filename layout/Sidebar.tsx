@@ -1,18 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import {
   LayoutDashboard,
   Award,
   BookOpen,
   Users,
   GraduationCap,
+  LogOut,
 } from "lucide-react";
 import { FormativeClass, CLASS_LABELS } from "@/clases-formativas/types";
 
 interface SidebarProps {
   studentName: string;
+  studentImage?: string | null;
   level: number;
   formativeClass: FormativeClass;
 }
@@ -25,19 +29,23 @@ const NAV_ITEMS = [
   { href: "/clases-formativas", label: "Clases Formativas", icon: GraduationCap },
 ];
 
-export default function Sidebar({ studentName, level, formativeClass }: SidebarProps) {
+export default function Sidebar({ studentName, studentImage, level, formativeClass }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-[300px] flex-shrink-0 flex-col bg-[#031706] border-r border-[#1e3320]">
+    <aside className="flex h-full w-[300px] flex-shrink-0 flex-col bg-[#031706] border-r border-[#1e3320]">
       {/* Student profile */}
       <div className="flex items-center gap-3 px-4 py-5">
-        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-[#c9a227]/20 border border-[#c9a227]/30">
-          <GraduationCap size={24} strokeWidth={1.5} className="text-[#c9a227]" />
+        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-[#c9a227]/20 border border-[#c9a227]/30 overflow-hidden">
+          {studentImage ? (
+            <Image src={studentImage} alt={studentName} width={48} height={48} className="h-full w-full object-cover" />
+          ) : (
+            <GraduationCap size={24} strokeWidth={1.5} className="text-[#c9a227]" />
+          )}
         </div>
         <div className="min-w-0">
           <p className="text-sm font-semibold text-[#f5f0e8] leading-tight truncate">
-            Estudiante
+            {studentName}
           </p>
           <p className="text-[10px] mt-0.5 uppercase tracking-wide text-[#9aab8a]">
             Nivel {level} · {CLASS_LABELS[formativeClass]}
@@ -69,6 +77,17 @@ export default function Sidebar({ studentName, level, formativeClass }: SidebarP
           );
         })}
       </nav>
+
+      {/* Logout */}
+      <div className="border-t border-[#1e3320] p-3">
+        <button
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="flex w-full items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-[#9aab8a] transition-colors hover:bg-[#1e3320] hover:text-[#c0392b] rounded-lg"
+        >
+          <LogOut size={18} strokeWidth={1.5} className="flex-shrink-0" />
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
     </aside>
   );
 }

@@ -1,7 +1,19 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --no-src-dir --import-alias \"@/*\" --yes --name \"levelup\")"
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --no-src-dir --import-alias \"@/*\" --yes --name \"levelup\")",
+      "Bash($env:STITCH_API_KEY=\"AQ.Ab8RN6IeLvQGhiyddltBsdLiwo-9wcbYddiI9vtijTeiLKBwbA\")",
+      "Bash($env:STITCH_PROJECT_ID=\"intense-clarity-471622-c7\")",
+      "Bash(npx -y @_davideast/stitch-mcp)",
+      "Skill(update-config)",
+      "Bash(claude mcp:*)",
+      "Bash(npx -y @_davideast/stitch-mcp proxy --version)",
+      "mcp__stitch__list_projects",
+      "mcp__stitch__list_screens",
+      "mcp__stitch__get_screen",
+      "Bash(npx tsc:*)",
+      "Bash(openssl rand:*)",
+      "mcp__stitch__generate_screen_from_text"
     ]
   }
 }

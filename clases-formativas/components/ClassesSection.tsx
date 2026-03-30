@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { FormativeClass, CLASS_LABELS, CLASS_ATTRIBUTES } from "@/clases-formativas/types";
 import { ArrowRight, Check } from "lucide-react";
 
@@ -51,6 +54,8 @@ const ATTRIBUTE_LABELS: Record<string, string> = {
 };
 
 export default function ClassesSection({ activeClass }: ClassesSectionProps) {
+  const [selectedClass, setSelectedClass] = useState<FormativeClass | null>(null);
+
   return (
     <section className="pb-8">
       {/* Section header */}
@@ -74,13 +79,15 @@ export default function ClassesSection({ activeClass }: ClassesSectionProps) {
       <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-none">
         {ALL_CLASSES.map((cls) => {
           const isActive = cls === activeClass;
+          const isSelected = cls === selectedClass;
           const [attr1, attr2] = CLASS_ATTRIBUTES[cls];
 
           return (
             <div
               key={cls}
-              className={`relative flex w-[220px] flex-shrink-0 flex-col overflow-hidden rounded-xl border p-4 transition-colors ${
-                isActive
+              onClick={() => setSelectedClass(isSelected ? null : cls)}
+              className={`relative flex w-[220px] flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-xl border p-4 transition-colors ${
+                isSelected
                   ? "border-[#c9a227]/60 bg-[#c9a227]/10"
                   : "border-[#1e3320] bg-[#0F2411]"
               }`}
@@ -88,7 +95,7 @@ export default function ClassesSection({ activeClass }: ClassesSectionProps) {
               {/* Watermark icon */}
               <span
                 className={`pointer-events-none absolute -right-3 -top-3 select-none text-[88px] leading-none ${
-                  isActive ? "opacity-10" : "opacity-[0.05]"
+                  isSelected ? "opacity-10" : "opacity-[0.05]"
                 }`}
               >
                 {CLASS_ICONS[cls]}
@@ -98,7 +105,7 @@ export default function ClassesSection({ activeClass }: ClassesSectionProps) {
               <div className="relative mb-3 flex flex-wrap gap-1">
                 <span
                   className={`rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${
-                    isActive
+                    isSelected
                       ? "bg-[#c9a227]/20 text-[#c9a227]"
                       : "bg-[#1e3320] text-[#9aab8a]"
                   }`}
@@ -107,7 +114,7 @@ export default function ClassesSection({ activeClass }: ClassesSectionProps) {
                 </span>
                 <span
                   className={`rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${
-                    isActive
+                    isSelected
                       ? "bg-[#c9a227]/20 text-[#c9a227]"
                       : "bg-[#1e3320] text-[#9aab8a]"
                   }`}
@@ -120,14 +127,14 @@ export default function ClassesSection({ activeClass }: ClassesSectionProps) {
               <div className="relative mb-2 flex items-center gap-2">
                 <span
                   className={`text-xl leading-none ${
-                    isActive ? "text-[#c9a227]" : "text-[#9aab8a]/60"
+                    isSelected ? "text-[#c9a227]" : "text-[#9aab8a]/60"
                   }`}
                 >
                   {CLASS_ICONS[cls]}
                 </span>
                 <h3
                   className={`font-serif text-base font-bold leading-tight ${
-                    isActive ? "text-[#c9a227] uppercase" : "text-[#f5f0e8]"
+                    isSelected ? "text-[#c9a227] uppercase" : "text-[#f5f0e8]"
                   }`}
                 >
                   {CLASS_LABELS[cls]}
@@ -142,7 +149,7 @@ export default function ClassesSection({ activeClass }: ClassesSectionProps) {
               {/* Motto */}
               <p
                 className={`relative mb-3 text-[9px] font-medium uppercase tracking-widest ${
-                  isActive ? "text-[#c9a227]/60" : "text-[#9aab8a]/40"
+                  isSelected ? "text-[#c9a227]/60" : "text-[#9aab8a]/40"
                 }`}
               >
                 "{CLASS_MOTTOS[cls]}"
