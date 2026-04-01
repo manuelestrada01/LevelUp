@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import { getCourseById, isTeacherOfCourse, getCourseworkConfig } from "@/lib/supabase/courses";
+import { getXpConfig } from "@/lib/supabase/config";
 import { getAuthSession } from "@/lib/session";
 import { getCourseWorkList } from "@/lib/google/classroom";
 import Link from "next/link";
@@ -25,18 +26,30 @@ export default async function CourseSetupPage({
   const authSession = await getAuthSession();
   if (!authSession) notFound();
 
-  const [classroomWork, savedConfigs] = await Promise.all([
+  const [classroomWork, savedConfigs, xpConfig] = await Promise.all([
     getCourseWorkList(authSession.accessToken, course.classroom_id),
     getCourseworkConfig(id),
+    getXpConfig(id),
   ]);
 
   const configMap = new Map(savedConfigs.map((c) => [c.classroom_coursework_id, c]));
+  const validTipos = new Set(xpConfig.map((x) => x.tipo));
 
-  const items = classroomWork.map((cw) => ({
-    classroom_coursework_id: cw.id!,
-    title: cw.title ?? cw.id!,
-    tipo: configMap.get(cw.id!)?.tipo ?? null,
-  }));
+  const items = classroomWork.map((cw) => {
+    const existingTipo = configMap.get(cw.id!)?.tipo ?? null;
+    // Auto-detect tipo from Classroom grading category name if not yet configured
+    const categoryName = (cw as { gradeCategory?: { name?: string } }).gradeCategory?.name ?? null;
+    const detectedTipo =
+      !existingTipo && categoryName && validTipos.has(categoryName) ? categoryName : null;
+    return {
+      classroom_coursework_id: cw.id!,
+      title: cw.title ?? cw.id!,
+      tipo: existingTipo ?? detectedTipo,
+      categoryName,
+    };
+  });
+
+  const tipos = xpConfig.map((x) => ({ value: x.tipo, label: x.label || x.tipo }));
 
   return (
     <div className="flex flex-col gap-6">
@@ -54,10 +67,11 @@ export default async function CourseSetupPage({
         <h1 className="font-serif text-2xl text-[#f5f0e8]">Configurar Tareas</h1>
         <p className="mt-1 text-sm text-[#9aab8a]">
           Asigná un tipo de producción a cada tarea de Classroom para que el sistema pueda calcular XP.
+          Los tipos se detectan automáticamente si coinciden con la categoría de calificación en Classroom.
         </p>
       </div>
 
-      <CourseSetupTable courseId={id} items={items} />
+      <CourseSetupTable courseId={id} items={items} tipos={tipos} />
     </div>
   );
 }

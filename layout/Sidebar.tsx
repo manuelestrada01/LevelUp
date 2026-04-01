@@ -12,13 +12,11 @@ import {
   GraduationCap,
   LogOut,
 } from "lucide-react";
-import { FormativeClass, CLASS_LABELS } from "@/clases-formativas/types";
-
 interface SidebarProps {
   studentName: string;
   studentImage?: string | null;
   level: number;
-  formativeClass: FormativeClass;
+  formativeClassTitle: string;
 }
 
 const NAV_ITEMS = [
@@ -29,7 +27,7 @@ const NAV_ITEMS = [
   { href: "/clases-formativas", label: "Clases Formativas", icon: GraduationCap },
 ];
 
-export default function Sidebar({ studentName, studentImage, level, formativeClass }: SidebarProps) {
+export default function Sidebar({ studentName, studentImage, level, formativeClassTitle }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -48,7 +46,7 @@ export default function Sidebar({ studentName, studentImage, level, formativeCla
             {studentName}
           </p>
           <p className="text-[10px] mt-0.5 uppercase tracking-wide text-[#9aab8a]">
-            Nivel {level} · {CLASS_LABELS[formativeClass]}
+            Nivel {level} · {formativeClassTitle}
           </p>
         </div>
       </div>

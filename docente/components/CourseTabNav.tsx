@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const TABS = [
-  { key: "panel", label: "Panel Docente" },
   { key: "resumen", label: "Resumen Académico" },
   { key: "alumnos", label: "Lista de Alumnos" },
+  { key: "acciones", label: "Panel de Acciones" },
   { key: "config", label: "Configuración" },
 ];
 
@@ -16,7 +16,7 @@ interface Props {
 
 export default function CourseTabNav({ courseId }: Props) {
   const searchParams = useSearchParams();
-  const active = searchParams.get("tab") ?? "panel";
+  const active = searchParams.get("tab") ?? "resumen";
 
   return (
     <div className="flex gap-1 border-b border-[#1e3320]">

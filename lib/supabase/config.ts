@@ -32,6 +32,17 @@ export interface BimestreConfigEntry {
   bimestre: string;
   start_date: string;
   end_date: string;
+  task_counts?: Record<string, number>;
+}
+
+export interface TitleRange {
+  id?: string;
+  course_id: string;
+  title: string;
+  role: string;
+  level_min: number;
+  level_max: number;
+  sort_order: number;
 }
 
 // ─── XP Config ───────────────────────────────
@@ -114,6 +125,31 @@ export async function upsertBimestreConfig(entries: BimestreConfigEntry[]) {
   const { error } = await supabase.from("bimestre_config").upsert(entries, {
     onConflict: "course_id,bimestre",
   });
+  if (error) throw error;
+}
+
+// ─── Title Ranges ─────────────────────────────
+
+export async function getTitleRanges(courseId: string): Promise<TitleRange[]> {
+  const { data } = await supabase
+    .from("title_ranges")
+    .select("*")
+    .eq("course_id", courseId)
+    .order("sort_order");
+  return data ?? [];
+}
+
+export async function upsertTitleRanges(courseId: string, ranges: TitleRange[]): Promise<void> {
+  // Delete existing and re-insert (clean approach for ordered lists)
+  const { error: delError } = await supabase.from("title_ranges").delete().eq("course_id", courseId);
+  if (delError) throw delError;
+  if (ranges.length === 0) return;
+  const rows = ranges.map((r, i) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id: _id, ...rest } = r;
+    return { ...rest, course_id: courseId, sort_order: i };
+  });
+  const { error } = await supabase.from("title_ranges").insert(rows);
   if (error) throw error;
 }
 

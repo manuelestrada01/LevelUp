@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAuthSession } from "@/lib/session";
 import { isTeacherOfCourse } from "@/lib/supabase/courses";
-import { upsertGameState, getStudentGameState, getActiveStrikes } from "@/lib/supabase/game";
+import { upsertGameState, getStudentGameState, getActiveStrikes, annulStrike } from "@/lib/supabase/game";
 import { logException } from "@/lib/supabase/teacher";
 import { getCourseById } from "@/lib/supabase/courses";
 
@@ -28,7 +28,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ email: 
   const gameState = await getStudentGameState(course_id, studentEmail, course.bimestre_activo);
   if (!gameState) return NextResponse.json({ error: "No game state found" }, { status: 404 });
 
+  // Anular todos los strikes activos (el desbloqueo implica resetear los strikes)
   const activeStrikes = await getActiveStrikes(course_id, studentEmail, course.bimestre_activo);
+  await Promise.all(activeStrikes.map((s) => annulStrike(s.id, session.user.email)));
 
   await upsertGameState({
     course_id,
@@ -36,7 +38,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ email: 
     bimestre: course.bimestre_activo,
     xp_total: gameState.xp_total,
     level: gameState.level,
-    strikes_active: activeStrikes.length,
+    strikes_active: 0,
     blocked: false,
     blocked_at: null,
   });

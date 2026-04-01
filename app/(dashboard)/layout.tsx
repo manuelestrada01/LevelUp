@@ -1,12 +1,15 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import Sidebar from "@/layout/Sidebar";
 import Header from "@/layout/Header";
+import Footer from "@/layout/Footer";
 import { getAuthSession } from "@/lib/session";
 import { getProfile } from "@/lib/supabase/profiles";
-import { getCoursesByTeacher } from "@/lib/supabase/courses";
+import { getCoursesByTeacher, getCoursesByIds, getVisibleCourseIds } from "@/lib/supabase/courses";
 import { getStudentGameStateByEmail } from "@/lib/supabase/game";
 import { detectRole } from "@/lib/google/classroom";
+import { getFormativeClasses } from "@/lib/supabase/classes";
 
 export default async function DashboardLayout({
   children,
@@ -52,24 +55,42 @@ export default async function DashboardLayout({
     const displayName = profile.display_name ?? defaultName;
     const studentImage = session.user.image ?? null;
 
-    const gameStates = await getStudentGameStateByEmail(email);
+    const [gameStates, allClasses, visibleIds] = await Promise.all([
+      getStudentGameStateByEmail(email),
+      getFormativeClasses(false),
+      getVisibleCourseIds(),
+    ]);
+
+    const studentCourseIds = gameStates
+      .map((s) => s.course_id)
+      .filter((id) => visibleIds.includes(id));
+
+    const [courses] = await Promise.all([getCoursesByIds(studentCourseIds)]);
+
     const level = gameStates.length > 0 ? gameStates[0].level : 1;
+    const classEntry = allClasses.find((c) => c.slug === profile.formative_class);
+    const formativeClassTitle = classEntry?.title ?? profile.formative_class;
 
     return (
       <div className="flex h-screen flex-col overflow-hidden bg-[#031706]">
-        <Header
-          activeSubject="rep1"
-          studentName={displayName}
-          studentImage={studentImage}
-        />
+        <Suspense fallback={<div className="h-20 border-b border-[#1e3320] bg-[#031706]" />}>
+          <Header
+            courses={courses.map((c) => ({ id: c.id, name: c.name }))}
+            studentName={displayName}
+            studentImage={studentImage}
+          />
+        </Suspense>
         <div className="flex flex-1 overflow-hidden">
           <Sidebar
             studentName={displayName}
             studentImage={studentImage}
             level={level}
-            formativeClass={profile.formative_class}
+            formativeClassTitle={formativeClassTitle}
           />
-          <main className="flex-1 overflow-y-auto">{children}</main>
+          <main className="flex-1 overflow-y-auto">
+            {children}
+            <Footer />
+          </main>
         </div>
       </div>
     );

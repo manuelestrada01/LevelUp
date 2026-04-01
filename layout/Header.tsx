@@ -2,23 +2,24 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Bell } from "lucide-react";
-import { Subject } from "@/dashboard/types";
+
+interface CourseTab {
+  id: string;
+  name: string;
+}
 
 interface HeaderProps {
-  activeSubject: Subject;
+  courses: CourseTab[];
   studentName: string;
   studentImage?: string | null;
 }
 
-const SUBJECT_TABS: { id: Subject; label: string; href: string }[] = [
-  { id: "rep1", label: "Tecnología de la Rep. 1", href: "/" },
-  { id: "rep2", label: "Tecnología de la Rep. 2", href: "/rep2" },
-  { id: "rep3", label: "Tecnología de la Rep. 3", href: "/rep3" },
-];
+export default function Header({ courses, studentName, studentImage }: HeaderProps) {
+  const searchParams = useSearchParams();
+  const activeCourseId = searchParams.get("courseId") ?? courses[0]?.id ?? "";
 
-export default function Header({ activeSubject, studentName, studentImage }: HeaderProps) {
   return (
     <header className="flex h-20 items-center justify-between border-b border-[#1e3320] bg-[#031706] px-6 shadow-[0_8px_20px_0px_rgba(0,0,0,0.6)]" style={{zIndex: 10, position: 'relative'}}>
       {/* Logo */}
@@ -27,21 +28,21 @@ export default function Header({ activeSubject, studentName, studentImage }: Hea
           Visor Académico
         </span>
 
-        {/* Subject tabs */}
+        {/* Course tabs */}
         <nav className="flex items-center gap-1">
-          {SUBJECT_TABS.map(({ id, label, href }) => {
-            const isActive = id === activeSubject;
+          {courses.map(({ id, name }) => {
+            const isActive = id === activeCourseId;
             return (
               <Link
                 key={id}
-                href={href}
+                href={`/?courseId=${id}`}
                 className={`relative px-3 py-4 text-xs font-medium transition-colors ${
                   isActive
                     ? "text-[#c9a227]"
                     : "text-[#9aab8a] hover:text-[#f5f0e8]"
                 }`}
               >
-                {label}
+                {name}
                 {isActive && (
                   <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#c9a227] rounded-t-full" />
                 )}

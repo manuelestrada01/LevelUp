@@ -4,6 +4,9 @@ import { getCoursesByTeacher } from "@/lib/supabase/courses";
 import { getAuthSession } from "@/lib/session";
 import { detectRole } from "@/lib/google/classroom";
 import TeacherSidebar from "@/docente/components/TeacherSidebar";
+import TeacherHeaderTabs from "@/docente/components/TeacherHeaderTabs";
+import Footer from "@/layout/Footer";
+import { Suspense } from "react";
 
 export default async function TeacherLayout({
   children,
@@ -20,7 +23,6 @@ export default async function TeacherLayout({
 
   const email = session.user.email ?? "";
 
-  // Verify teacher access: either has registered courses OR Classroom says teacher
   const courses = await getCoursesByTeacher(email);
   if (courses.length === 0) {
     const authSession = await getAuthSession();
@@ -40,13 +42,18 @@ export default async function TeacherLayout({
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0d1a0f]">
-      <TeacherSidebar teacherName={teacherName} teacherImage={teacherImage} />
+      <Suspense fallback={<div className="w-16 shrink-0 border-r border-[#1e3320] bg-[#0d1a0f]" />}>
+        <TeacherSidebar teacherName={teacherName} teacherImage={teacherImage} />
+      </Suspense>
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex items-center justify-between border-b border-[#1e3320] bg-[#0d1a0f] px-8 py-4">
-          <span className="font-serif text-lg text-[#c9a227] tracking-wide">
+        <header className="flex items-center justify-between border-b border-[#1e3320] bg-[#0d1a0f] px-6 py-4">
+          <span className="shrink-0 font-serif text-lg tracking-wide text-[#c9a227]">
             Visor Académico — Panel Docente
           </span>
-          <div className="flex items-center gap-3">
+          <Suspense fallback={null}>
+            <TeacherHeaderTabs courses={courses} />
+          </Suspense>
+          <div className="flex shrink-0 items-center gap-3">
             {teacherImage ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={teacherImage} alt={teacherName} className="h-8 w-8 rounded-full" />
@@ -59,6 +66,7 @@ export default async function TeacherLayout({
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-8">{children}</main>
+        <Footer />
       </div>
     </div>
   );

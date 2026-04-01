@@ -1,15 +1,14 @@
-export type ProductionType = "A4" | "A3" | "CAL" | "CAD" | "EVA" | "EVT";
-
-export type LaminaStatus = "entregada" | "tardía" | "no_entregada" | "aprobada" | "rechazada";
+export type LaminaStatus = "entregada" | "tardía" | "no_entregada" | "pendiente";
 
 export interface Lamina {
   id: string;
-  productionType: ProductionType;
+  productionType: string;
   title: string;
-  dueDate: Date;
+  bimestre: string;
+  dueDate: Date | null;
   submittedAt?: Date;
   status: LaminaStatus;
   xpEarned?: number;
+  isEarly?: boolean;
   strikeAdded?: boolean;
-  feedback?: string;
 }

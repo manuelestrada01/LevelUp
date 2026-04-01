@@ -4,20 +4,25 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Save } from "lucide-react";
 
-const TIPOS = ["A4", "A3", "CAL", "MAQ", "CAD", "EVA", "EVT"] as const;
-
 interface Item {
   classroom_coursework_id: string;
   title: string;
   tipo: string | null;
+  categoryName: string | null;
+}
+
+interface TipoOption {
+  value: string;
+  label: string;
 }
 
 interface Props {
   courseId: string;
   items: Item[];
+  tipos: TipoOption[];
 }
 
-export default function CourseSetupTable({ courseId, items }: Props) {
+export default function CourseSetupTable({ courseId, items, tipos }: Props) {
   const router = useRouter();
   const [assignments, setAssignments] = useState<Item[]>(items);
   const [saving, setSaving] = useState(false);
@@ -26,7 +31,7 @@ export default function CourseSetupTable({ courseId, items }: Props) {
   function setTipo(id: string, tipo: string) {
     setAssignments((prev) =>
       prev.map((item) =>
-        item.classroom_coursework_id === id ? { ...item, tipo } : item
+        item.classroom_coursework_id === id ? { ...item, tipo: tipo || null } : item
       )
     );
     setSaved(false);
@@ -46,7 +51,10 @@ export default function CourseSetupTable({ courseId, items }: Props) {
         }))
       ),
     });
-    setSaved(res.ok);
+    if (res.ok) {
+      setSaved(true);
+      router.refresh();
+    }
     setSaving(false);
   }
 
@@ -65,29 +73,46 @@ export default function CourseSetupTable({ courseId, items }: Props) {
           <thead className="bg-[#1a2e1c] text-left text-xs text-[#9aab8a]">
             <tr>
               <th className="px-4 py-3">Tarea en Classroom</th>
+              <th className="px-4 py-3">Categoría en Classroom</th>
               <th className="px-4 py-3">Tipo de Producción</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#1e3320] bg-[#0d1a0f]">
-            {assignments.map((item) => (
-              <tr key={item.classroom_coursework_id} className="hover:bg-[#1a2e1c]">
-                <td className="px-4 py-3 text-[#f5f0e8]">{item.title}</td>
-                <td className="px-4 py-3">
-                  <select
-                    value={item.tipo ?? ""}
-                    onChange={(e) => setTipo(item.classroom_coursework_id, e.target.value)}
-                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
-                  >
-                    <option value="">Sin asignar</option>
-                    {TIPOS.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-              </tr>
-            ))}
+            {assignments.map((item) => {
+              const autoDetected =
+                item.tipo !== null &&
+                item.categoryName !== null &&
+                item.tipo === item.categoryName;
+              return (
+                <tr key={item.classroom_coursework_id} className="hover:bg-[#1a2e1c]">
+                  <td className="px-4 py-3 text-[#f5f0e8]">{item.title}</td>
+                  <td className="px-4 py-3 text-xs text-[#9aab8a]">
+                    {item.categoryName ?? <span className="italic opacity-50">—</span>}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={item.tipo ?? ""}
+                        onChange={(e) =>
+                          setTipo(item.classroom_coursework_id, e.target.value)
+                        }
+                        className="rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                      >
+                        <option value="">Sin asignar</option>
+                        {tipos.map((t) => (
+                          <option key={t.value} value={t.value}>
+                            {t.label}
+                          </option>
+                        ))}
+                      </select>
+                      {autoDetected && (
+                        <span className="text-[10px] text-[#8fbc8f]">auto</span>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

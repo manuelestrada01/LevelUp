@@ -1,50 +1,34 @@
-import { Badge } from "@/distinciones/types";
+import { auth } from "@/auth";
+import { getVisibleCourseIds } from "@/lib/supabase/courses";
+import { getDistinctionsForStudentByCourses } from "@/lib/supabase/teacher";
+import { ALL_DISTINCTIONS, EarnedBadge } from "@/distinciones/types";
 import BadgesGrid from "@/distinciones/components/BadgesGrid";
 
-const MOCK_EARNED: Badge[] = [
-  {
-    id: "primera-entrega",
-    name: "Primera Entrega",
-    description: "Completaste tu primera lámina en término.",
-    earnedAt: new Date("2026-03-01"),
-    icon: "📜",
-  },
-  {
-    id: "racha-3",
-    name: "Racha de 3",
-    description: "Tres entregas consecutivas antes del plazo.",
-    earnedAt: new Date("2026-03-10"),
-    icon: "🔥",
-  },
-  {
-    id: "silencioso",
-    name: "Artesano Silencioso",
-    description: "Entregaste 24hs antes en 5 oportunidades.",
-    earnedAt: new Date("2026-03-15"),
-    icon: "🌿",
-  },
-  {
-    id: "calidad",
-    name: "Trazo Destacado",
-    description: "Recibiste bonus de calidad técnica por primera vez.",
-    earnedAt: new Date("2026-03-18"),
-    icon: "⭐",
-  },
-];
+export default async function DistincionesPage() {
+  const session = await auth();
+  const email = session?.user?.email ?? "";
 
-const MOCK_LOCKED = [
-  { id: "nivel-30", name: "Maestro del Trazo", description: "Alcanza el nivel 30.", icon: "👑" },
-  { id: "sin-strikes", name: "Camino Limpio", description: "Completa un bimestre sin strikes.", icon: "🛡" },
-  { id: "racha-10", name: "Inquebrantable", description: "Diez entregas consecutivas en término.", icon: "⚡" },
-  { id: "colaborador", name: "Espíritu del Gremio", description: "Participa en una misión de intercurso.", icon: "🤝" },
-  { id: "cad-maestro", name: "Dominio CAD", description: "Aprueba una evaluación CAD con bonus de calidad.", icon: "📐" },
-  { id: "evento", name: "Presencia en el Nexo", description: "Participa en un evento especial.", icon: "✦" },
-];
+  const visibleIds = await getVisibleCourseIds();
+  const grants = await getDistinctionsForStudentByCourses(email, visibleIds);
 
-export default function DistincionesPage() {
+  const earnedIds = new Set(grants.map((g) => g.distinction_id));
+
+  const earned: EarnedBadge[] = grants
+    .map((g) => {
+      const def = ALL_DISTINCTIONS.find((d) => d.id === g.distinction_id);
+      if (!def) return null;
+      return {
+        ...def,
+        earnedAt: new Date(g.granted_at),
+        grantedBy: g.granted_by,
+      };
+    })
+    .filter((b): b is EarnedBadge => b !== null);
+
+  const locked = ALL_DISTINCTIONS.filter((d) => !earnedIds.has(d.id));
+
   return (
     <div className="w-full px-6 py-6 flex flex-col gap-8">
-      {/* Page header */}
       <div>
         <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.2em] text-[#9aab8a]">
           Logros del Gremio
@@ -57,7 +41,7 @@ export default function DistincionesPage() {
         </p>
       </div>
 
-      <BadgesGrid earned={MOCK_EARNED} locked={MOCK_LOCKED} />
+      <BadgesGrid earned={earned} locked={locked} />
     </div>
   );
 }

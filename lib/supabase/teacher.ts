@@ -105,6 +105,21 @@ export async function getDistinctionsForStudent(
   return (data as DistinctionGrant[]) ?? [];
 }
 
+export async function getDistinctionsForStudentByCourses(
+  studentEmail: string,
+  courseIds: string[]
+): Promise<DistinctionGrant[]> {
+  if (!courseIds.length) return [];
+  const { data, error } = await supabase
+    .from("distinction_grants")
+    .select("*")
+    .eq("student_email", studentEmail)
+    .in("course_id", courseIds)
+    .order("granted_at", { ascending: false });
+  if (error) throw error;
+  return (data as DistinctionGrant[]) ?? [];
+}
+
 export async function logException(
   exception: Omit<TeacherException, "id" | "created_at">
 ): Promise<void> {
@@ -124,4 +139,30 @@ export async function getExceptionsForStudent(
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data as TeacherException[]) ?? [];
+}
+
+export async function getExceptionById(id: string): Promise<TeacherException | null> {
+  const { data, error } = await supabase
+    .from("teacher_exceptions")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error || !data) return null;
+  return data as TeacherException;
+}
+
+export async function updateExceptionNotes(id: string, notes: string): Promise<void> {
+  const { error } = await supabase
+    .from("teacher_exceptions")
+    .update({ notes })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteException(id: string): Promise<void> {
+  const { error } = await supabase
+    .from("teacher_exceptions")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
 }

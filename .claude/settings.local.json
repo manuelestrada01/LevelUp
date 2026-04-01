@@ -13,7 +13,9 @@
       "mcp__stitch__get_screen",
       "Bash(npx tsc:*)",
       "Bash(openssl rand:*)",
-      "mcp__stitch__generate_screen_from_text"
+      "mcp__stitch__generate_screen_from_text",
+      "Bash(node -e \"const {google} = require\\(''googleapis''\\); const c = google.classroom\\({version:''v1'', auth: null}\\); console.log\\(Object.keys\\(c.courses\\)\\)\")",
+      "Bash(xargs grep:*)"
     ]
   }
 }

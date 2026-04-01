@@ -1,11 +1,14 @@
 import type { StudentGameState } from "@/lib/supabase/game";
+import { getProfilesFull } from "@/lib/supabase/profiles";
+import { getFormativeClasses } from "@/lib/supabase/classes";
+import ResumenAcademicoDisplay from "./ResumenAcademicoDisplay";
 
 interface Props {
   gameStates: StudentGameState[];
   bimestre: string;
 }
 
-export default function ResumenAcademico({ gameStates, bimestre }: Props) {
+export default async function ResumenAcademico({ gameStates, bimestre }: Props) {
   const total = gameStates.length;
   const blocked = gameStates.filter((s) => s.blocked).length;
   const atRisk = gameStates.filter((s) => s.strikes_active === 2).length;
@@ -20,62 +23,39 @@ export default function ResumenAcademico({ gameStates, bimestre }: Props) {
   }));
   const maxCount = Math.max(...xpDist.map((b) => b.count), 1);
 
+  const emails = gameStates.map((s) => s.student_email);
+  const [profiles, formativeClasses] = await Promise.all([
+    getProfilesFull(emails),
+    getFormativeClasses(),
+  ]);
+
+  const classMap = new Map(formativeClasses.map((c) => [c.slug, c.title]));
+  const classCounts = new Map<string, number>();
+  for (const profile of profiles.values()) {
+    if (!profile.formative_class) continue;
+    classCounts.set(profile.formative_class, (classCounts.get(profile.formative_class) ?? 0) + 1);
+  }
+  const topClasses = [...classCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([slug, count]) => ({ slug, title: classMap.get(slug) ?? slug, count }));
+
+  const strikeDist = [0, 1, 2, 3].map((n) => ({
+    n,
+    count: gameStates.filter((s) => s.strikes_active === n).length,
+  }));
+
   return (
-    <div className="flex flex-col gap-6">
-      <p className="text-sm text-[#9aab8a]">Bimestre activo: <span className="text-[#c9a227]">{bimestre}</span></p>
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {[
-          { label: "Alumnos", value: total },
-          { label: "XP promedio", value: avgXp },
-          { label: "Nivel promedio", value: avgLevel },
-          { label: "En riesgo (2 strikes)", value: atRisk, danger: true },
-          { label: "Bloqueados", value: blocked, danger: true },
-        ].map(({ label, value, danger }) => (
-          <div key={label} className="rounded-xl border border-[#1e3320] bg-[#1a2e1c] p-4">
-            <p className="text-xs text-[#9aab8a]">{label}</p>
-            <p className={`mt-1 text-2xl font-bold ${danger && value > 0 ? "text-[#c0392b]" : "text-[#f5f0e8]"}`}>
-              {value}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* XP Distribution Bar Chart */}
-      <div className="rounded-xl border border-[#1e3320] bg-[#1a2e1c] p-5">
-        <h3 className="mb-4 text-sm font-medium text-[#f5f0e8]">Distribución de XP</h3>
-        <div className="flex items-end gap-2 h-28">
-          {xpDist.map(({ label, count }) => (
-            <div key={label} className="flex flex-1 flex-col items-center gap-1">
-              <span className="text-xs text-[#9aab8a]">{count}</span>
-              <div
-                className="w-full rounded-t bg-[#c9a227]/70"
-                style={{ height: `${Math.round((count / maxCount) * 80)}px`, minHeight: count > 0 ? "4px" : "0" }}
-              />
-              <span className="text-[10px] text-[#9aab8a]">{label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Strike distribution */}
-      <div className="rounded-xl border border-[#1e3320] bg-[#1a2e1c] p-5">
-        <h3 className="mb-4 text-sm font-medium text-[#f5f0e8]">Distribución de Strikes</h3>
-        <div className="flex gap-4">
-          {[0, 1, 2, 3].map((n) => {
-            const count = gameStates.filter((s) => s.strikes_active === n).length;
-            return (
-              <div key={n} className="flex flex-col items-center gap-1">
-                <span className={`text-xl font-bold ${n === 3 ? "text-[#c0392b]" : n === 2 ? "text-amber-400" : "text-[#8fbc8f]"}`}>
-                  {count}
-                </span>
-                <span className="text-xs text-[#9aab8a]">{n} strike{n !== 1 ? "s" : ""}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
+    <ResumenAcademicoDisplay
+      bimestre={bimestre}
+      total={total}
+      avgXp={avgXp}
+      avgLevel={avgLevel}
+      atRisk={atRisk}
+      blocked={blocked}
+      xpDist={xpDist}
+      maxCount={maxCount}
+      topClasses={topClasses}
+      strikeDist={strikeDist}
+    />
   );
 }

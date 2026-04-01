@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getProfile } from "@/lib/supabase/profiles";
+import { getFormativeClasses } from "@/lib/supabase/classes";
 import ClassSelector from "@/clases-formativas/components/ClassSelector";
 
 export default async function ElegirClasePage() {
@@ -10,6 +11,8 @@ export default async function ElegirClasePage() {
   // Si ya tiene clase, redirigir al dashboard
   const profile = await getProfile(session.user.email);
   if (profile) redirect("/");
+
+  const classes = await getFormativeClasses(true);
 
   return (
     <div className="min-h-screen bg-[#0d1a0f] flex items-center justify-center px-4 py-12">
@@ -27,7 +30,7 @@ export default async function ElegirClasePage() {
           </p>
         </div>
 
-        <ClassSelector email={session.user.email} />
+        <ClassSelector email={session.user.email} classes={classes} />
       </div>
     </div>
   );

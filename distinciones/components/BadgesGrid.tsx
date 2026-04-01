@@ -1,8 +1,8 @@
-import { Badge } from "@/distinciones/types";
+import { EarnedBadge, Badge } from "@/distinciones/types";
 
 interface BadgesGridProps {
-  earned: Badge[];
-  locked: { id: string; name: string; description: string; icon: string }[];
+  earned: EarnedBadge[];
+  locked: Badge[];
 }
 
 function formatDate(date: Date): string {

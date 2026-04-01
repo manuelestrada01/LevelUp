@@ -19,12 +19,13 @@ export async function POST(req: NextRequest) {
   }
 
   const email = session.user.email;
+  const displayName = session.user.name?.split(" ")[0] ?? undefined;
 
   const existingProfile = await getProfile(email);
   const changedFrom = existingProfile?.formative_class ?? null;
 
   try {
-    await saveProfile(email, formativeClass);
+    await saveProfile(email, formativeClass, displayName);
     await addClassHistory(email, formativeClass, changedFrom !== formativeClass ? changedFrom : null);
   } catch {
     return NextResponse.json({ error: "Error al guardar perfil" }, { status: 500 });

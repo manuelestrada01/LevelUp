@@ -8,6 +8,8 @@ export interface FormativeClassEntry {
   description: string;
   published: boolean;
   sort_order: number;
+  verse_text?: string;
+  verse_reference?: string;
 }
 
 export interface ClassHistoryEntry {

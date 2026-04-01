@@ -68,6 +68,27 @@ export async function createCourse(params: {
   return data as Course;
 }
 
+export async function getCoursesByIds(ids: string[]): Promise<Course[]> {
+  if (ids.length === 0) return [];
+  const { data, error } = await supabase
+    .from("courses")
+    .select("*")
+    .in("id", ids)
+    .eq("student_visible", true)
+    .eq("active", true)
+    .order("name");
+  if (error) throw error;
+  return data as Course[];
+}
+
+export async function getAllActiveCourses(): Promise<Course[]> {
+  const { data } = await supabase
+    .from("courses")
+    .select("*")
+    .eq("active", true);
+  return (data ?? []) as Course[];
+}
+
 export async function getVisibleCourseIds(): Promise<string[]> {
   const { data } = await supabase
     .from("courses")
@@ -111,6 +132,18 @@ export async function upsertCourseworkConfig(
   const { error } = await supabase
     .from("coursework_config")
     .upsert(rows, { onConflict: "course_id,classroom_coursework_id" });
+  if (error) throw error;
+}
+
+export async function deleteCourseworkConfig(
+  courseId: string,
+  cwId: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("coursework_config")
+    .delete()
+    .eq("course_id", courseId)
+    .eq("classroom_coursework_id", cwId);
   if (error) throw error;
 }
 

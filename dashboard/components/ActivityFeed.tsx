@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { ActivityEntry } from "@/xp/types";
 import { Mail, Zap, Star, Trophy, Lock, Unlock } from "lucide-react";
 
@@ -44,7 +47,12 @@ const EVENT_ICON_COLORS: Record<ActivityEntry["type"], string> = {
 
 export default function ActivityFeed({ entries }: ActivityFeedProps) {
   return (
-    <div className="rounded-xl bg-[#0F2411] p-5 border border-[#1e3320]">
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: 0.1, ease: "easeOut" }}
+      className="rounded-xl bg-[#0F2411] p-5 border border-[#1e3320]"
+    >
       <p className="mb-4 text-xs font-medium uppercase tracking-widest text-[#9aab8a]">
         Fragmentos de Actividad
       </p>
@@ -55,13 +63,23 @@ export default function ActivityFeed({ entries }: ActivityFeedProps) {
             Sin actividad reciente.
           </p>
         )}
-        {entries.map((entry) => {
+        {entries.map((entry, index) => {
           const Icon = EVENT_ICONS[entry.type];
           const iconClass = EVENT_ICON_COLORS[entry.type];
           const hasXp = entry.xpDelta !== undefined && entry.xpDelta !== 0;
 
           return (
-            <div key={entry.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+            <motion.div
+              key={entry.id}
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                delay: 0.2 + index * 0.08,
+                duration: 0.35,
+                ease: "easeOut",
+              }}
+              className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+            >
               {/* Icon */}
               <div
                 className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${iconClass}`}
@@ -93,10 +111,10 @@ export default function ActivityFeed({ entries }: ActivityFeedProps) {
                   {entry.xpDelta} XP
                 </span>
               )}
-            </div>
+            </motion.div>
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }

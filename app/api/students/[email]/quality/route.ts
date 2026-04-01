@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { logException } from "@/lib/supabase/teacher";
 import { upsertGameState, getStudentGameStateByEmail } from "@/lib/supabase/game";
+import { calcNivelFromXp } from "@/xp/engine";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
@@ -17,9 +18,11 @@ export async function POST(
   const state = states.find((s) => s.course_id === courseId && s.bimestre === bimestre);
   if (!state) return NextResponse.json({ error: "Alumno no encontrado" }, { status: 404 });
 
+  const newXp = state.xp_total + xp;
   await upsertGameState({
     ...state,
-    xp_total: state.xp_total + xp,
+    xp_total: newXp,
+    level: calcNivelFromXp(newXp),
   });
 
   await logException({

@@ -8,12 +8,9 @@ interface Props {
   availableCourses: classroom_v1.Schema$Course[];
 }
 
-const YEAR_OPTIONS = [1, 2, 3];
-
 export default function AddCourseForm({ availableCourses }: Props) {
   const router = useRouter();
   const [selectedId, setSelectedId] = useState("");
-  const [year, setYear] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +23,7 @@ export default function AddCourseForm({ availableCourses }: Props) {
       const res = await fetch("/api/courses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ classroom_id: selectedId, year }),
+        body: JSON.stringify({ classroom_id: selectedId, year: 1 }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -54,21 +51,6 @@ export default function AddCourseForm({ availableCourses }: Props) {
           {availableCourses.map((c) => (
             <option key={c.id} value={c.id!}>
               {c.name} {c.section ? `— ${c.section}` : ""}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs text-[#9aab8a]">Año del espacio curricular</label>
-        <select
-          value={year}
-          onChange={(e) => setYear(Number(e.target.value))}
-          className="w-full rounded-lg border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
-        >
-          {YEAR_OPTIONS.map((y) => (
-            <option key={y} value={y}>
-              {y}° año
             </option>
           ))}
         </select>

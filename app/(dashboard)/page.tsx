@@ -3,24 +3,30 @@ import { getProfile } from "@/lib/supabase/profiles";
 import { getStudentGameStateByEmail, getDeliveriesByStudentEmail } from "@/lib/supabase/game";
 import { getTalentsForStudent } from "@/lib/supabase/teacher";
 import { getVisibleCourseIds } from "@/lib/supabase/courses";
+import { getFormativeClasses } from "@/lib/supabase/classes";
 import { getLevelRange, XP_THRESHOLDS } from "@/xp/engine";
 import HeroSection from "@/dashboard/components/HeroSection";
 import ActivityFeed from "@/dashboard/components/ActivityFeed";
+import DashboardAnimatedWrapper from "@/dashboard/components/DashboardAnimatedWrapper";
 import XpCard from "@/xp/components/XpCard";
 import StrikesCard from "@/strikes/components/StrikesCard";
 import TalentsCard from "@/talentos/components/TalentsCard";
 import ClassesSection from "@/clases-formativas/components/ClassesSection";
-import { FormativeClass } from "@/clases-formativas/types";
 import { ALL_TALENTS } from "@/talentos/types";
 import { ActivityEntry } from "@/xp/types";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ courseId?: string }>;
+}) {
+  const { courseId } = await searchParams;
   const session = await auth();
   const email = session?.user?.email ?? "";
   const defaultName = session?.user?.name?.split(" ")[0] ?? "Estudiante";
 
   let studentName = defaultName;
-  let formativeClass: FormativeClass = "erudito";
+  let formativeClassSlug = "erudito";
   let xp = 0;
   let xpCurrentLevel = 0;
   let xpNextLevel = 520;
@@ -40,10 +46,13 @@ export default async function DashboardPage() {
       getVisibleCourseIds(),
     ]);
 
-    const gameStates = allGameStates.filter((s) => visibleIds.includes(s.course_id));
+    const visibleGameStates = allGameStates.filter((s) => visibleIds.includes(s.course_id));
+    const gameStates = courseId
+      ? visibleGameStates.filter((s) => s.course_id === courseId)
+      : visibleGameStates;
 
     if (profile) {
-      formativeClass = profile.formative_class;
+      formativeClassSlug = profile.formative_class;
       studentName = profile.display_name ?? defaultName;
     }
 
@@ -77,6 +86,9 @@ export default async function DashboardPage() {
     }));
   }
 
+  const [publishedClasses] = await Promise.all([getFormativeClasses(true)]);
+  const activeClassEntry = publishedClasses.find((c) => c.slug === formativeClassSlug) ?? null;
+
   const talents = grantedTalentIds.length > 0
     ? ALL_TALENTS.filter((t) => grantedTalentIds.includes(t.id))
     : ALL_TALENTS.filter((t) =>
@@ -84,8 +96,8 @@ export default async function DashboardPage() {
       );
 
   return (
-    <div className="w-full px-8 pt-8 pb-6 flex flex-col gap-6">
-      <HeroSection studentName={studentName} formativeClass={formativeClass} />
+    <DashboardAnimatedWrapper>
+      <HeroSection studentName={studentName} classEntry={activeClassEntry} />
 
       <div className="grid grid-cols-[3fr_1fr] gap-4">
         <XpCard
@@ -106,7 +118,7 @@ export default async function DashboardPage() {
         <TalentsCard talents={talents} />
       </div>
 
-      <ClassesSection activeClass={formativeClass} />
-    </div>
+      <ClassesSection activeClassSlug={formativeClassSlug} classes={publishedClasses} />
+    </DashboardAnimatedWrapper>
   );
 }

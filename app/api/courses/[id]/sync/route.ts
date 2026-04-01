@@ -14,6 +14,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const body = await req.json().catch(() => ({}));
   const force = body?.force === true;
 
-  const result = await syncCourse(id, session.accessToken, force);
-  return NextResponse.json(result);
+  try {
+    const result = await syncCourse(id, session.accessToken, force);
+    return NextResponse.json(result);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    console.error("[sync] Error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { StudentGameState, Strike } from "@/lib/supabase/game";
 import StrikeManager from "./StrikeManager";
 
@@ -8,19 +9,33 @@ interface Props {
   state: StudentGameState;
   courseId: string;
   strikes: Strike[];
+  displayName?: string;
+  index?: number;
 }
 
-export default function StudentRow({ state, courseId, strikes }: Props) {
+export default function StudentRow({ state, courseId, strikes, displayName, index = 0 }: Props) {
   const activeStrikes = strikes.filter((s) => s.active);
 
   return (
-    <tr className="hover:bg-[#1a2e1c]">
+    <motion.tr
+      initial={{ opacity: 0, x: -8 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.05, duration: 0.3, ease: "easeOut" }}
+      className="hover:bg-[#1a2e1c]"
+    >
       <td className="px-4 py-3">
         <Link
           href={`/teacher/students/${encodeURIComponent(state.student_email)}`}
-          className="text-[#f5f0e8] hover:text-[#c9a227] hover:underline"
+          className="hover:text-[#c9a227] hover:underline"
         >
-          {state.student_email}
+          {displayName ? (
+            <span className="flex flex-col">
+              <span className="text-[#f5f0e8]">{displayName}</span>
+              <span className="text-xs text-[#9aab8a]">{state.student_email}</span>
+            </span>
+          ) : (
+            <span className="text-[#f5f0e8]">{state.student_email}</span>
+          )}
         </Link>
       </td>
       <td className="px-4 py-3 text-[#8fbc8f]">Nv. {state.level}</td>
@@ -53,7 +68,7 @@ export default function StudentRow({ state, courseId, strikes }: Props) {
           blocked={state.blocked}
         />
       </td>
-    </tr>
+    </motion.tr>
   );
 }
 

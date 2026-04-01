@@ -10,7 +10,7 @@ export interface Delivery {
   submitted_at: string | null;
   due_at: string | null;
   is_early: boolean;
-  status: "OK" | "LATE" | "MISSING";
+  status: "OK" | "LATE" | "MISSING" | "PENDING";
   xp_base: number;
   xp_bonus: number;
   synced_at: string;
@@ -191,6 +191,81 @@ export async function getActiveStrikes(
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data as Strike[]) ?? [];
+}
+
+export async function getAllStrikesForStudent(
+  courseId: string,
+  studentEmail: string,
+  bimestre: string
+): Promise<Strike[]> {
+  const { data, error } = await supabase
+    .from("strikes")
+    .select("*")
+    .eq("course_id", courseId)
+    .eq("student_email", studentEmail)
+    .eq("bimestre", bimestre)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data as Strike[]) ?? [];
+}
+
+export async function getAllDeliveriesForStudentByCourses(
+  studentEmail: string,
+  courseIds: string[]
+): Promise<Delivery[]> {
+  if (!courseIds.length) return [];
+  const { data, error } = await supabase
+    .from("deliveries")
+    .select("*")
+    .eq("student_email", studentEmail)
+    .in("course_id", courseIds)
+    .order("due_at", { ascending: false });
+  if (error) throw error;
+  return (data as Delivery[]) ?? [];
+}
+
+export async function getStrikesForStudentByCourses(
+  studentEmail: string,
+  courseIds: string[]
+): Promise<Strike[]> {
+  if (!courseIds.length) return [];
+  const { data, error } = await supabase
+    .from("strikes")
+    .select("*")
+    .eq("student_email", studentEmail)
+    .in("course_id", courseIds);
+  if (error) throw error;
+  return (data as Strike[]) ?? [];
+}
+
+export async function annulStrikesByCwId(
+  courseId: string,
+  cwId: string,
+  annulledBy: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("strikes")
+    .update({
+      active: false,
+      annulled_at: new Date().toISOString(),
+      annulled_by: annulledBy,
+    })
+    .eq("course_id", courseId)
+    .eq("classroom_coursework_id", cwId)
+    .eq("active", true);
+  if (error) throw error;
+}
+
+export async function deleteDeliveriesByCwId(
+  courseId: string,
+  cwId: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("deliveries")
+    .delete()
+    .eq("course_id", courseId)
+    .eq("classroom_coursework_id", cwId);
+  if (error) throw error;
 }
 
 export async function getAllStrikesForCourse(

@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import { saveTeacherToken } from "@/lib/supabase/teacher-tokens";
 
 async function refreshAccessToken(refreshToken: string) {
   const res = await fetch("https://oauth2.googleapis.com/token", {
@@ -37,6 +38,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             "https://www.googleapis.com/auth/classroom.student-submissions.students.readonly",
             "https://www.googleapis.com/auth/classroom.student-submissions.me.readonly",
             "https://www.googleapis.com/auth/classroom.rosters.readonly",
+            "https://www.googleapis.com/auth/classroom.profile.emails",
+            "https://www.googleapis.com/auth/classroom.profile.photos",
           ].join(" "),
           access_type: "offline",
           prompt: "consent",
@@ -48,6 +51,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, account }) {
       // Login inicial
       if (account) {
+        if (account.refresh_token && token.email) {
+          await saveTeacherToken(token.email as string, account.refresh_token as string);
+        }
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
         token.expiresAt = account.expires_at;

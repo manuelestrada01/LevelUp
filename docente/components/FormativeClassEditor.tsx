@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Save, Trash2, Plus, Eye, EyeOff } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Save, Trash2, Plus, Eye, EyeOff, X } from "lucide-react";
 import type { FormativeClassEntry } from "@/lib/supabase/classes";
 
 interface Props {
@@ -17,6 +18,8 @@ function emptyClass(): FormativeClassEntry {
     description: "",
     published: false,
     sort_order: 99,
+    verse_text: "",
+    verse_reference: "",
   };
 }
 
@@ -141,96 +144,140 @@ export default function FormativeClassEditor({ initialClasses }: Props) {
         </button>
       </div>
 
-      {/* Edit form */}
-      {editing && (
-        <div className="rounded-xl border border-[#c9a227]/30 bg-[#1a2e1c] p-5">
-          <h4 className="mb-4 font-serif text-base text-[#f5f0e8]">
-            {isNew ? "Nueva Clase Formativa" : `Editar: ${editing.title}`}
-          </h4>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <label className="flex flex-col gap-1">
-              <span className="text-xs text-[#9aab8a]">Slug (identificador)</span>
-              <input
-                value={editing.slug}
-                onChange={(e) => setEditing({ ...editing, slug: e.target.value })}
-                disabled={!isNew}
-                className="rounded border border-[#1e3320] bg-[#0d1a0f] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227] disabled:opacity-50"
-              />
-            </label>
-            <label className="flex flex-col gap-1">
-              <span className="text-xs text-[#9aab8a]">Título</span>
-              <input
-                value={editing.title}
-                onChange={(e) => setEditing({ ...editing, title: e.target.value })}
-                className="rounded border border-[#1e3320] bg-[#0d1a0f] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
-              />
-            </label>
-            <label className="flex flex-col gap-1">
-              <span className="text-xs text-[#9aab8a]">Inspiración bíblica</span>
-              <input
-                value={editing.inspiration}
-                onChange={(e) => setEditing({ ...editing, inspiration: e.target.value })}
-                className="rounded border border-[#1e3320] bg-[#0d1a0f] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
-              />
-            </label>
-            <label className="flex flex-col gap-1">
-              <span className="text-xs text-[#9aab8a]">Atributos (máx. 2)</span>
-              <div className="flex gap-2">
-                <input
-                  value={editing.attributes[0] ?? ""}
-                  onChange={(e) =>
-                    setEditing({ ...editing, attributes: [e.target.value, editing.attributes[1] ?? ""] })
-                  }
-                  placeholder="Atributo 1"
-                  className="flex-1 rounded border border-[#1e3320] bg-[#0d1a0f] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
-                />
-                <input
-                  value={editing.attributes[1] ?? ""}
-                  onChange={(e) =>
-                    setEditing({ ...editing, attributes: [editing.attributes[0] ?? "", e.target.value] })
-                  }
-                  placeholder="Atributo 2"
-                  className="flex-1 rounded border border-[#1e3320] bg-[#0d1a0f] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
-                />
+      <AnimatePresence>
+        {editing && (
+          <motion.div
+            key="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          >
+            <motion.div
+              key="modal"
+              initial={{ opacity: 0, scale: 0.95, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 8 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              className="relative w-full max-w-lg rounded-xl border border-[#1e3320] bg-[#0d1a0f] p-6 shadow-2xl"
+            >
+              <div className="flex items-center justify-between mb-5">
+                <h4 className="font-serif text-base text-[#f5f0e8]">
+                  {isNew ? "Nueva Clase Formativa" : `Editar: ${editing.title}`}
+                </h4>
+                <button
+                  onClick={() => setEditing(null)}
+                  className="text-[#9aab8a] hover:text-[#f5f0e8]"
+                >
+                  <X size={16} />
+                </button>
               </div>
-            </label>
-            <label className="flex flex-col gap-1 sm:col-span-2">
-              <span className="text-xs text-[#9aab8a]">Descripción</span>
-              <textarea
-                value={editing.description}
-                onChange={(e) => setEditing({ ...editing, description: e.target.value })}
-                rows={3}
-                className="rounded border border-[#1e3320] bg-[#0d1a0f] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227] resize-none"
-              />
-            </label>
-          </div>
-          <div className="mt-4 flex items-center gap-3">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="flex items-center gap-2 rounded-lg bg-[#c9a227] px-4 py-2 text-sm font-medium text-[#0d1a0f] disabled:opacity-50"
-            >
-              <Save size={14} />
-              {saving ? "Guardando..." : "Guardar"}
-            </button>
-            <button
-              onClick={() => setEditing(null)}
-              className="rounded-lg px-4 py-2 text-sm text-[#9aab8a] hover:text-[#f5f0e8]"
-            >
-              Cancelar
-            </button>
-            <label className="ml-auto flex items-center gap-2 text-sm text-[#9aab8a]">
-              <input
-                type="checkbox"
-                checked={editing.published}
-                onChange={(e) => setEditing({ ...editing, published: e.target.checked })}
-                className="accent-[#c9a227]"
-              />
-              Publicada
-            </label>
-          </div>
-        </div>
-      )}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-[#9aab8a]">Slug (identificador)</span>
+                  <input
+                    value={editing.slug}
+                    onChange={(e) => setEditing({ ...editing, slug: e.target.value })}
+                    disabled={!isNew}
+                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227] disabled:opacity-50"
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-[#9aab8a]">Título</span>
+                  <input
+                    value={editing.title}
+                    onChange={(e) => setEditing({ ...editing, title: e.target.value })}
+                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-[#9aab8a]">Inspiración bíblica</span>
+                  <input
+                    value={editing.inspiration}
+                    onChange={(e) => setEditing({ ...editing, inspiration: e.target.value })}
+                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                  />
+                </label>
+                <label className="flex flex-col gap-1 sm:col-span-2">
+                  <span className="text-xs text-[#9aab8a]">Atributos (máx. 2)</span>
+                  <div className="flex gap-2">
+                    <input
+                      value={editing.attributes[0] ?? ""}
+                      onChange={(e) =>
+                        setEditing({ ...editing, attributes: [e.target.value, editing.attributes[1] ?? ""] })
+                      }
+                      placeholder="Atributo 1"
+                      className="flex-1 rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                    />
+                    <input
+                      value={editing.attributes[1] ?? ""}
+                      onChange={(e) =>
+                        setEditing({ ...editing, attributes: [editing.attributes[0] ?? "", e.target.value] })
+                      }
+                      placeholder="Atributo 2"
+                      className="flex-1 rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                    />
+                  </div>
+                </label>
+                <label className="flex flex-col gap-1 sm:col-span-2">
+                  <span className="text-xs text-[#9aab8a]">Descripción</span>
+                  <textarea
+                    value={editing.description}
+                    onChange={(e) => setEditing({ ...editing, description: e.target.value })}
+                    rows={3}
+                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227] resize-none"
+                  />
+                </label>
+                <label className="flex flex-col gap-1 sm:col-span-2">
+                  <span className="text-xs text-[#9aab8a]">Versículo bíblico (texto)</span>
+                  <textarea
+                    value={editing.verse_text ?? ""}
+                    onChange={(e) => setEditing({ ...editing, verse_text: e.target.value })}
+                    rows={2}
+                    placeholder="Ej: Jehová es mi pastor; nada me faltará."
+                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227] resize-none placeholder:text-[#9aab8a]/40"
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-[#9aab8a]">Referencia bíblica</span>
+                  <input
+                    value={editing.verse_reference ?? ""}
+                    onChange={(e) => setEditing({ ...editing, verse_reference: e.target.value })}
+                    placeholder="Ej: Salmos 23:1"
+                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227] placeholder:text-[#9aab8a]/40"
+                  />
+                </label>
+              </div>
+              <div className="mt-5 flex items-center gap-3">
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="flex items-center gap-2 rounded-lg bg-[#c9a227] px-4 py-2 text-sm font-medium text-[#0d1a0f] disabled:opacity-50"
+                >
+                  <Save size={14} />
+                  {saving ? "Guardando..." : "Guardar"}
+                </button>
+                <button
+                  onClick={() => setEditing(null)}
+                  className="rounded-lg px-4 py-2 text-sm text-[#9aab8a] hover:text-[#f5f0e8]"
+                >
+                  Cancelar
+                </button>
+                <label className="ml-auto flex items-center gap-2 text-sm text-[#9aab8a]">
+                  <input
+                    type="checkbox"
+                    checked={editing.published}
+                    onChange={(e) => setEditing({ ...editing, published: e.target.checked })}
+                    className="accent-[#c9a227]"
+                  />
+                  Publicada
+                </label>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
