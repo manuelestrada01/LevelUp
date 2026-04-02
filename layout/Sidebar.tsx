@@ -23,7 +23,7 @@ const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/misiones", label: "Quests/Misiones", icon: Award },
   { href: "/laminas", label: "Library/Bitácora", icon: BookOpen },
-  { href: "/distinciones", label: "Community/Insignias", icon: Users },
+  { href: "/comunidad", label: "Community/Insignias", icon: Users },
   { href: "/clases-formativas", label: "Clases Formativas", icon: GraduationCap },
 ];
 

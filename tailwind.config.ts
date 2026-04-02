@@ -12,6 +12,7 @@ const config: Config = {
     "./distinciones/**/*.{js,ts,jsx,tsx,mdx}",
     "./laminas/**/*.{js,ts,jsx,tsx,mdx}",
     "./misiones/**/*.{js,ts,jsx,tsx,mdx}",
+    "./comunidad/**/*.{js,ts,jsx,tsx,mdx}",
     "./docente/**/*.{js,ts,jsx,tsx,mdx}",
     "./shared/**/*.{js,ts,jsx,tsx,mdx}",
   ],
