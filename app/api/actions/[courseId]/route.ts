@@ -45,12 +45,13 @@ export async function POST(
     type: ActionType;
     title: string;
     description?: string;
+    strike_reason?: string;
     xp_value?: number;
     talent_slug?: string;
     affected_emails: string[];
   };
 
-  const { type, title, description, xp_value, talent_slug, affected_emails } = body;
+  const { type, title, description, strike_reason, xp_value, talent_slug, affected_emails } = body;
 
   if (!type || !affected_emails?.length) {
     return NextResponse.json({ error: "type and affected_emails are required" }, { status: 400 });
@@ -80,6 +81,7 @@ export async function POST(
         studentEmail,
         bimestre: course.bimestre_activo,
         description: description ?? null,
+        strikeReason: strike_reason ?? "no_submission",
         xpValue: xp_value ?? 0,
         talentSlug: talent_slug ?? null,
         createdBy: session.user.email,
@@ -98,20 +100,20 @@ async function executeAction(opts: {
   studentEmail: string;
   bimestre: string;
   description: string | null;
+  strikeReason: string;
   xpValue: number;
   talentSlug: string | null;
   createdBy: string;
 }) {
-  const { type, courseId, studentEmail, bimestre, description, xpValue, talentSlug, createdBy } = opts;
+  const { type, courseId, studentEmail, bimestre, description, strikeReason, xpValue, talentSlug, createdBy } = opts;
 
   switch (type) {
     case "strike_force": {
-      const reason = description ?? "no_submission";
       const strike = await addStrike({
         course_id: courseId,
         student_email: studentEmail,
         bimestre,
-        reason,
+        reason: strikeReason,
         classroom_coursework_id: null,
         active: true,
       });

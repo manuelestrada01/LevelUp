@@ -15,7 +15,10 @@
       "Bash(openssl rand:*)",
       "mcp__stitch__generate_screen_from_text",
       "Bash(node -e \"const {google} = require\\(''googleapis''\\); const c = google.classroom\\({version:''v1'', auth: null}\\); console.log\\(Object.keys\\(c.courses\\)\\)\")",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Read(//c/Users/jetsa/.claude/skills/gsap-core/**)",
+      "Bash(ls -la \"/c/Users/jetsa/LevelUp/app/\\(dashboard\\)/\")",
+      "Bash(grep -r \"console.cloud.google\\\\|google-cloud\\\\|project_id\" /c/Users/jetsa/LevelUp --include=*.ts --include=*.tsx --include=*.json --include=*.md)"
     ]
   }
 }

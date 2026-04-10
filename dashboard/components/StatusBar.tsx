@@ -4,8 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { AlertTriangle, ShieldAlert, X } from "lucide-react";
+import { AlertTriangle, Shield, ShieldAlert, X } from "lucide-react";
 import type { Strike } from "@/lib/supabase/game";
+import type { Talent } from "@/talentos/types";
+import type { FormativeClassEntry } from "@/lib/supabase/classes";
+import CharacterSheet from "@/dashboard/components/CharacterSheet";
 
 gsap.registerPlugin(useGSAP);
 
@@ -129,21 +132,107 @@ interface StatusBarProps {
   blocked: boolean;
   strikes: number;
   strikeDetails: Strike[];
+  classEntry: FormativeClassEntry | null;
+  talents: Talent[];
 }
 
 export default function StatusBar({
-  xp, xpCurrentLevel, xpNextLevel, level, studentName, blocked, strikes, strikeDetails,
+  xp, xpCurrentLevel, xpNextLevel, level, levelName, studentName,
+  blocked, strikes, strikeDetails, classEntry, talents,
 }: StatusBarProps) {
   const [popupOpen, setPopupOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
   const animatedXp = useCountUp(xp);
   const clamped = Math.min(strikes, MAX_STRIKES);
   const progress = Math.min(((xp - xpCurrentLevel) / (xpNextLevel - xpCurrentLevel)) * 100, 100);
   const hasDetails = strikeDetails.length > 0;
   const strikeMessage = STRIKE_MESSAGES[clamped] ?? STRIKE_MESSAGES[3];
 
+  // ── Level badge GSAP ──────────────────────────────────────────────────────
+  const containerRef = useRef<HTMLDivElement>(null);
+  const badgeRef = useRef<HTMLButtonElement>(null);
+  const shieldIconRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    (_, contextSafe) => {
+      const badge = badgeRef.current;
+      if (!badge) return;
+
+      // Idle breathing glow
+      gsap.to(badge, {
+        boxShadow: "0 0 16px rgba(201,162,39,0.32), 0 0 4px rgba(201,162,39,0.12) inset",
+        duration: 1.9,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      const onEnter = contextSafe!(() => {
+        gsap.killTweensOf(badge, "boxShadow");
+        gsap.to(badge, {
+          scale: 1.08,
+          boxShadow: "0 0 28px rgba(201,162,39,0.6), 0 0 10px rgba(201,162,39,0.2) inset",
+          duration: 0.28,
+          ease: "power2.out",
+        });
+        gsap.to(shieldIconRef.current, {
+          rotation: 14,
+          scale: 1.15,
+          duration: 0.35,
+          ease: "back.out(2.5)",
+        });
+      });
+
+      const onLeave = contextSafe!(() => {
+        gsap.to(badge, {
+          scale: 1,
+          boxShadow: "0 0 4px rgba(201,162,39,0.08)",
+          duration: 0.35,
+          ease: "power2.out",
+          onComplete: () => {
+            gsap.to(badge, {
+              boxShadow: "0 0 16px rgba(201,162,39,0.32), 0 0 4px rgba(201,162,39,0.12) inset",
+              duration: 1.9,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+            });
+          },
+        });
+        gsap.to(shieldIconRef.current, {
+          rotation: 0,
+          scale: 1,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      });
+
+      const onClick = contextSafe!(() => {
+        gsap.killTweensOf(badge, "scale");
+        gsap.timeline()
+          .to(badge, { scale: 0.92, duration: 0.1, ease: "power2.in" })
+          .to(badge, { scale: 1.06, duration: 0.22, ease: "back.out(2)" })
+          .to(badge, { scale: 1, duration: 0.15, ease: "power2.out" });
+      });
+
+      badge.addEventListener("mouseenter", onEnter);
+      badge.addEventListener("mouseleave", onLeave);
+      badge.addEventListener("click", onClick);
+
+      return () => {
+        badge.removeEventListener("mouseenter", onEnter);
+        badge.removeEventListener("mouseleave", onLeave);
+        badge.removeEventListener("click", onClick);
+      };
+    },
+    { scope: containerRef }
+  );
+
   return (
     <>
       <motion.div
+        ref={containerRef}
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
@@ -152,44 +241,66 @@ export default function StatusBar({
         }`}
       >
         {/* ── XP section ── */}
-        <div className="flex flex-1 flex-col justify-center px-6 py-5">
-          {/* Title row */}
-          <div className="relative flex items-center justify-center mb-2">
-            <p className="text-xs font-medium uppercase tracking-widest text-[#9aab8a] text-center">
-              Resonancia de Experiencia
-            </p>
-            <div className="absolute right-0 flex items-baseline gap-1">
-              <span className="font-serif text-2xl font-bold text-[#c9a227] tabular-nums">
-                {formatXp(animatedXp)}
-              </span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#9aab8a]">XP</span>
+        <div className="flex flex-1 gap-4 px-5 py-5">
+
+          {/* Level badge — clickable trigger */}
+          <button
+            ref={badgeRef}
+            onClick={() => setSheetOpen(true)}
+            title="Ver Hoja de Personaje"
+            className="flex-shrink-0 flex flex-col items-center justify-center w-[60px] rounded-xl border border-[#c9a227]/25 bg-[#c9a227]/5 cursor-pointer gap-0.5"
+          >
+            <div ref={shieldIconRef}>
+              <Shield size={18} strokeWidth={1.3} className="text-[#c9a227]" />
             </div>
-          </div>
+            <span className="font-serif text-xl font-bold text-[#c9a227] leading-none tabular-nums">
+              {level}
+            </span>
+            <span className="text-[8px] font-medium uppercase tracking-widest text-[#9aab8a]/50">
+              Nv.
+            </span>
+          </button>
 
-          {/* Subtitle */}
-          <p className="mb-3 text-[10px] uppercase tracking-wider text-[#9aab8a]/70">
-            Nivel {level} · {studentName}
-            {blocked && <span className="ml-2 text-[#c0392b]">· Bimestre bloqueado</span>}
-          </p>
+          {/* XP details */}
+          <div className="flex flex-1 flex-col justify-center">
+            {/* Title row */}
+            <div className="relative flex items-center justify-center mb-2">
+              <p className="text-xs font-medium uppercase tracking-widest text-[#9aab8a] text-center">
+                Resonancia de Experiencia
+              </p>
+              <div className="absolute right-0 flex items-baseline gap-1">
+                <span className="font-serif text-2xl font-bold text-[#c9a227] tabular-nums">
+                  {formatXp(animatedXp)}
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#9aab8a]">XP</span>
+              </div>
+            </div>
 
-          {/* Progress bar */}
-          <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-[#0d1a0f]">
-            <motion.div
-              className={`h-full rounded-full ${blocked ? "bg-[#c0392b]/60" : "bg-gradient-to-r from-[#4a8f5a] via-[#8fbc8f] to-[#c9a227]"}`}
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 1.3, delay: 0.25, ease: "easeOut" }}
-            />
-          </div>
-
-          {/* Bottom stats */}
-          <div className="mt-2.5 flex justify-between">
-            <p className="text-[10px] uppercase tracking-wider text-[#9aab8a]/70">
-              Siguiente hito: {formatXp(xpNextLevel)} XP
+            {/* Subtitle */}
+            <p className="mb-3 text-[10px] uppercase tracking-wider text-[#9aab8a]/70">
+              {levelName} · {studentName}
+              {blocked && <span className="ml-2 text-[#c0392b]">· Bimestre bloqueado</span>}
             </p>
-            <p className="text-[10px] uppercase tracking-wider text-[#9aab8a]">
-              {Math.round(progress)}% Completado
-            </p>
+
+            {/* Progress bar */}
+            <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-[#0d1a0f]">
+              <motion.div
+                className={`h-full rounded-full ${blocked ? "bg-[#c0392b]/60" : "bg-gradient-to-r from-[#4a8f5a] via-[#8fbc8f] to-[#c9a227]"}`}
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 1.3, delay: 0.25, ease: "easeOut" }}
+              />
+            </div>
+
+            {/* Bottom stats */}
+            <div className="mt-2.5 flex justify-between">
+              <p className="text-[10px] uppercase tracking-wider text-[#9aab8a]/70">
+                Siguiente hito: {formatXp(xpNextLevel)} XP
+              </p>
+              <p className="text-[10px] uppercase tracking-wider text-[#9aab8a]">
+                {Math.round(progress)}% Completado
+              </p>
+            </div>
           </div>
         </div>
 
@@ -203,7 +314,6 @@ export default function StatusBar({
             hasDetails ? "cursor-pointer hover:bg-[#c0392b]/5" : ""
           }`}
         >
-          {/* Header */}
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-medium uppercase tracking-widest text-[#9aab8a]">
               Strikes
@@ -215,7 +325,6 @@ export default function StatusBar({
             )}
           </div>
 
-          {/* Strike boxes */}
           <div className="flex gap-1.5 mb-3">
             {Array.from({ length: MAX_STRIKES }).map((_, i) => {
               const isActive = i < clamped;
@@ -246,7 +355,6 @@ export default function StatusBar({
             })}
           </div>
 
-          {/* Message */}
           <p className="text-[10px] leading-relaxed text-[#9aab8a]">{strikeMessage}</p>
 
           {hasDetails && (
@@ -260,6 +368,16 @@ export default function StatusBar({
       {popupOpen && (
         <StrikesPopup strikeDetails={strikeDetails} onClose={() => setPopupOpen(false)} />
       )}
+
+      <CharacterSheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        studentName={studentName}
+        level={level}
+        levelName={levelName}
+        classEntry={classEntry}
+        talents={talents}
+      />
     </>
   );
 }

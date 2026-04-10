@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, FileText } from "lucide-react";
+import { Search, FileText, AlertTriangle } from "lucide-react";
 import StrikeManager from "./StrikeManager";
 import type { Strike } from "@/lib/supabase/game";
 
@@ -27,35 +27,61 @@ interface Props {
 
 export default function AlumnosTable({ rows, courseId, bimestre }: Props) {
   const [query, setQuery] = useState("");
+  const [onlyWithStrikes, setOnlyWithStrikes] = useState(false);
 
-  const filtered = query.trim()
-    ? rows.filter(
-        (r) =>
-          r.displayName.toLowerCase().includes(query.toLowerCase()) ||
-          r.email.toLowerCase().includes(query.toLowerCase())
-      )
-    : rows;
+  const filtered = rows.filter((r) => {
+    if (onlyWithStrikes && r.strikesActive === 0) return false;
+    if (query.trim()) {
+      return (
+        r.displayName.toLowerCase().includes(query.toLowerCase()) ||
+        r.email.toLowerCase().includes(query.toLowerCase())
+      );
+    }
+    return true;
+  });
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="relative w-full max-w-sm">
-        <Search
-          size={14}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9aab8a]"
-        />
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar alumno por nombre o mail…"
-          className="w-full rounded-lg border border-[#1e3320] bg-[#0d1a0f] py-2 pl-8 pr-3 text-sm text-[#f5f0e8] placeholder-[#9aab8a] outline-none focus:border-[#c9a227]/60"
-        />
+      <div className="flex items-center gap-3">
+        <div className="relative w-full max-w-sm">
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9aab8a]"
+          />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Buscar alumno por nombre o mail…"
+            className="w-full rounded-lg border border-[#1e3320] bg-[#0d1a0f] py-2 pl-8 pr-3 text-sm text-[#f5f0e8] placeholder-[#9aab8a] outline-none focus:border-[#c9a227]/60"
+          />
+        </div>
+        <button
+          onClick={() => setOnlyWithStrikes((v) => !v)}
+          className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
+            onlyWithStrikes
+              ? "border-[#c0392b]/60 bg-[#c0392b]/20 text-[#c0392b]"
+              : "border-[#1e3320] bg-[#0d1a0f] text-[#9aab8a] hover:border-[#c0392b]/40 hover:text-[#c0392b]"
+          }`}
+        >
+          <AlertTriangle size={13} />
+          Con strikes
+          {onlyWithStrikes && (
+            <span className="ml-1 rounded bg-[#c0392b]/30 px-1.5 py-0.5 text-[10px]">
+              {filtered.length}
+            </span>
+          )}
+        </button>
       </div>
 
       {filtered.length === 0 ? (
         <div className="rounded-xl border border-dashed border-[#1e3320] p-12 text-center">
           <p className="text-[#9aab8a]">
-            {query ? "Sin resultados para esa búsqueda." : "No hay datos para el bimestre seleccionado."}
+            {onlyWithStrikes && !query
+              ? "Ningún alumno tiene strikes en este bimestre."
+              : query
+              ? "Sin resultados para esa búsqueda."
+              : "No hay datos para el bimestre seleccionado."}
           </p>
         </div>
       ) : (

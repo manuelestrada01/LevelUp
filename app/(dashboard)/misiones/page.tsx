@@ -77,7 +77,8 @@ export default async function MisionesPage() {
 
   return (
     <DashboardAnimatedWrapper>
-      <header className="pb-6 border-b border-[#1e3320]">
+      <div className="max-w-4xl mx-auto">
+      <header className="pb-6 border-b border-[#1e3320] text-center">
         <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#9aab8a] mb-1">
           Bimestre {activeBimestre}
         </p>
@@ -93,6 +94,7 @@ export default async function MisionesPage() {
         nivel={activeGameState?.level ?? 1}
         total={misiones.length}
       />
+      </div>
     </DashboardAnimatedWrapper>
   );
 }

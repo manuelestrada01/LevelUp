@@ -63,7 +63,7 @@ export default function ActivityFeed({ entries }: ActivityFeedProps) {
             Sin actividad reciente.
           </p>
         )}
-        {entries.slice(0, 4).map((entry, index) => {
+        {entries.slice(0, 5).map((entry, index) => {
           const Icon = EVENT_ICONS[entry.type];
           const iconClass = EVENT_ICON_COLORS[entry.type];
           const hasXp = entry.xpDelta !== undefined && entry.xpDelta !== 0;
@@ -100,8 +100,10 @@ export default function ActivityFeed({ entries }: ActivityFeedProps) {
 
               {hasXp && (
                 <span
-                  className={`flex-shrink-0 text-xs font-bold tabular-nums ${
-                    entry.xpDelta! > 0 ? "text-[#8fbc8f]" : "text-[#c0392b]"
+                  className={`flex-shrink-0 rounded-md px-2 py-0.5 text-[11px] font-bold tabular-nums ${
+                    entry.xpDelta! > 0
+                      ? "bg-[#8fbc8f]/10 text-[#8fbc8f]"
+                      : "bg-[#c0392b]/10 text-[#c0392b]"
                   }`}
                 >
                   {entry.xpDelta! > 0 ? "+" : ""}

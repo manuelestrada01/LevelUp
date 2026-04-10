@@ -25,7 +25,17 @@ export default function SyncStatus({ courseId }: Props) {
         body: JSON.stringify({ force: true }),
       });
       const data = await res.json();
-      setMessage(data.synced ? `${data.studentCount} alumnos sincronizados` : "Sin cambios");
+      if (!res.ok) {
+        setMessage(`Error: ${data.error ?? "desconocido"}`);
+        return;
+      }
+      const parts = [`${data.studentCount} alumnos`];
+      if (data.strikesCreated > 0) parts.push(`+${data.strikesCreated} strikes`);
+      if (data.strikesSkipped > 0) {
+        const firstErr = data.errors?.[0] ?? "";
+        parts.push(`${data.strikesSkipped} strikes con error: ${firstErr}`);
+      }
+      setMessage(data.synced ? parts.join(" · ") : "Sin cambios");
       router.refresh();
     } catch {
       setMessage("Error al sincronizar");

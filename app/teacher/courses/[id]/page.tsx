@@ -2,8 +2,8 @@ import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import { getCourseById, isTeacherOfCourse } from "@/lib/supabase/courses";
 import { getAllStudentGameStates, getAllStrikesForCourse } from "@/lib/supabase/game";
-import { getXpConfig, getBimestreConfig, getLevelConfig, getTitleRanges } from "@/lib/supabase/config";
-import type { LevelConfigEntry } from "@/lib/supabase/config";
+import { getXpConfig, getBimestreConfig, getTitleRanges } from "@/lib/supabase/config";
+import type { TitleRange } from "@/lib/supabase/config";
 import { getProfilesFull } from "@/lib/supabase/profiles";
 import { getFormativeClasses } from "@/lib/supabase/classes";
 import { syncCourse } from "@/lib/sync/classroom";
@@ -18,8 +18,10 @@ import SyncStatus from "@/docente/components/SyncStatus";
 import Link from "next/link";
 import { ArrowLeft, Settings } from "lucide-react";
 
-function getLevelInfo(level: number, levelConfig: LevelConfigEntry[]) {
-  return levelConfig.find((l) => l.nivel === level) ?? null;
+function getLevelInfo(level: number, titleRanges: TitleRange[]) {
+  const matches = titleRanges.filter((r) => level >= r.level_min && level <= r.level_max);
+  if (matches.length === 0) return null;
+  return matches.reduce((best, r) => (r.level_min > best.level_min ? r : best));
 }
 
 export default async function CourseDetailPage({
@@ -132,10 +134,10 @@ async function AlumnosTab({
   allStrikes: Awaited<ReturnType<typeof getAllStrikesForCourse>>;
   emails: string[];
 }) {
-  const [profilesFull, formativeClasses, levelConfig] = await Promise.all([
+  const [profilesFull, formativeClasses, titleRanges] = await Promise.all([
     getProfilesFull(emails),
     getFormativeClasses(),
-    getLevelConfig(),
+    getTitleRanges(courseId),
   ]);
 
   const classMap = new Map(formativeClasses.map((c) => [c.slug, c.title]));
@@ -153,7 +155,7 @@ async function AlumnosTab({
     const displayName = profile?.display_name ?? state.student_email;
     const formativeSlug = profile?.formative_class ?? null;
     const formativeTitle = formativeSlug ? (classMap.get(formativeSlug) ?? formativeSlug) : "—";
-    const levelInfo = getLevelInfo(state.level, levelConfig);
+    const levelInfo = getLevelInfo(state.level, titleRanges);
     const strikes = strikesByStudent.get(state.student_email) ?? [];
     const activeStrikes = strikes.filter((s) => s.active);
     return {

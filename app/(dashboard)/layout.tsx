@@ -21,7 +21,7 @@ export default async function DashboardLayout({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if ((session as any).error === "RefreshTokenError") {
-    redirect("/api/auth/signout");
+    redirect("/api/auth/force-signout");
   }
 
   const email = session.user.email ?? "";

@@ -154,13 +154,16 @@ export async function getDeliveriesByStudentEmail(
 
 export async function addStrike(
   strike: Omit<Strike, "id" | "annulled_at" | "annulled_by" | "created_at">
-): Promise<Strike> {
+): Promise<Strike | null> {
   const { data, error } = await supabase
     .from("strikes")
     .insert(strike)
     .select()
     .single();
-  if (error) throw error;
+  if (error) {
+    if (error.code === "23505") return null; // already exists, ignore duplicate
+    throw error;
+  }
   return data as Strike;
 }
 

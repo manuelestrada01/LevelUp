@@ -42,7 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             "https://www.googleapis.com/auth/classroom.profile.photos",
           ].join(" "),
           access_type: "offline",
-          prompt: "consent",
+          prompt: "select_account",
         },
       },
     }),
@@ -52,7 +52,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // Login inicial
       if (account) {
         if (account.refresh_token && token.email) {
-          await saveTeacherToken(token.email as string, account.refresh_token as string);
+          try {
+            await saveTeacherToken(token.email as string, account.refresh_token as string);
+          } catch {
+            // no bloquear login si falla el guardado del token docente
+          }
         }
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;

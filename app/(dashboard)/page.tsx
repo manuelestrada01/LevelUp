@@ -9,6 +9,7 @@ import HeroSection from "@/dashboard/components/HeroSection";
 import ActivityFeed from "@/dashboard/components/ActivityFeed";
 import VerseOfDay from "@/dashboard/components/VerseOfDay";
 import DashboardAnimatedWrapper from "@/dashboard/components/DashboardAnimatedWrapper";
+import SyncTrigger from "@/dashboard/components/SyncTrigger";
 import StatusBar from "@/dashboard/components/StatusBar";
 import TalentsCard from "@/talentos/components/TalentsCard";
 import ClassesSection from "@/clases-formativas/components/ClassesSection";
@@ -64,7 +65,7 @@ export default async function DashboardPage({
       const state = gameStates[0];
       xp = state.xp_total;
       level = state.level;
-      strikes = state.strikes_active;
+      strikes = strikeDetails.length;
       blocked = state.blocked;
       xpCurrentLevel = XP_THRESHOLDS[level - 1] ?? 0;
       xpNextLevel = XP_THRESHOLDS[level] ?? XP_THRESHOLDS[XP_THRESHOLDS.length - 1];
@@ -93,14 +94,11 @@ export default async function DashboardPage({
   const [publishedClasses] = await Promise.all([getFormativeClasses(true)]);
   const activeClassEntry = publishedClasses.find((c) => c.slug === formativeClassSlug) ?? null;
 
-  const talents = grantedTalentIds.length > 0
-    ? ALL_TALENTS.filter((t) => grantedTalentIds.includes(t.id))
-    : ALL_TALENTS.filter((t) =>
-        ["mano-firme", "perseverancia-activa", "constancia-silenciosa", "atencion-al-detalle"].includes(t.id)
-      );
+  const talents = ALL_TALENTS.filter((t) => grantedTalentIds.includes(t.id));
 
   return (
     <DashboardAnimatedWrapper>
+      <SyncTrigger />
       <HeroSection studentName={studentName} classEntry={activeClassEntry} />
 
       <StatusBar
@@ -113,6 +111,8 @@ export default async function DashboardPage({
         blocked={blocked}
         strikes={strikes}
         strikeDetails={strikeDetails}
+        classEntry={activeClassEntry}
+        talents={talents}
       />
 
       <div className="grid grid-cols-3 gap-4">

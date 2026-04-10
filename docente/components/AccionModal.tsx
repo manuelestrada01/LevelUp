@@ -32,7 +32,7 @@ const ACTION_OPTIONS: { value: ActionType; label: string }[] = [
 ];
 
 const STRIKE_REASONS = [
-  { value: "missing_materials", label: "No trajo materiales" },
+  { value: "missing_material", label: "No trajo materiales" },
   { value: "no_submission", label: "No entrega" },
   { value: "late_submission", label: "Entrega tardía" },
 ];
@@ -115,6 +115,7 @@ export default function AccionModal({ courseId, students, talents, action, trigg
       type,
       title: buildTitle(),
       description: buildDescription() || null,
+      strike_reason: type === "strike_force" ? strikeReason : undefined,
       xp_value: ["xp_event", "xp_quality", "xp_extraordinary"].includes(type) ? xpValue : undefined,
       talent_slug: type === "talent" ? talentSlug : undefined,
       affected_emails: [...selectedEmails],

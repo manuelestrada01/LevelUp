@@ -198,8 +198,7 @@ export async function syncCourse(
         submitted_at: submittedAt?.toISOString() ?? null,
         due_at: dueDate?.toISOString() ?? null,
         is_early: isEarly,
-        // Store PENDING as MISSING in DB until migration 005 is applied
-        status: status === "PENDING" ? "MISSING" : status,
+        status,
         xp_base: xpBase,
         xp_bonus: xpBonus,
       });
@@ -216,48 +215,82 @@ export async function syncCourse(
 
   await upsertDeliveries(deliveriesToUpsert);
 
+  let strikesCreated = 0;
+  let strikesSkipped = 0;
+  const studentErrors: string[] = [];
+
   for (const student of roster) {
     const email = student.profile?.emailAddress;
     if (!email) continue;
 
-    const xpTotal = studentXpMap.get(email) ?? 0;
-    const nivel = calcNivelFromXp(xpTotal);
-    const currentStrikes = await getActiveStrikes(courseId, email, course.bimestre_activo);
+    try {
+      const xpTotal = studentXpMap.get(email) ?? 0;
+      const nivel = calcNivelFromXp(xpTotal);
 
-    // Check ALL strikes (active + annulled) to avoid re-creating teacher-annulled strikes
-    const allStrikes = await getAllStrikesForStudent(courseId, email, course.bimestre_activo);
-    const existingCwIds = new Set(
-      allStrikes.map((s) => s.classroom_coursework_id).filter(Boolean)
-    );
+      const allStrikes = await getAllStrikesForStudent(courseId, email, course.bimestre_activo);
+      // Block recreation only for:
+      // - active strikes (don't duplicate)
+      // - strikes manually annulled by a teacher (annulled_by contains "@", i.e. an email)
+      // Strikes annulled by the sync cleanup use "sync-deleted-task" (no "@") and CAN be recreated.
+      const existingCwIds = new Set(
+        allStrikes
+          .filter((s) => s.active || (s.annulled_by?.includes("@") ?? false))
+          .map((s) => s.classroom_coursework_id)
+          .filter(Boolean)
+      );
 
-    for (const { reason, cwId } of studentNewStrikeReasons.get(email) ?? []) {
-      if (!existingCwIds.has(cwId)) {
-        await addStrike({
-          course_id: courseId,
-          student_email: email,
-          bimestre: course.bimestre_activo,
-          reason,
-          classroom_coursework_id: cwId,
-          active: true,
-        });
+      for (const { reason, cwId } of studentNewStrikeReasons.get(email) ?? []) {
+        if (!existingCwIds.has(cwId)) {
+          try {
+            await addStrike({
+              course_id: courseId,
+              student_email: email,
+              bimestre: course.bimestre_activo,
+              reason,
+              classroom_coursework_id: cwId,
+              active: true,
+            });
+            strikesCreated++;
+            existingCwIds.add(cwId); // prevent duplicate in same sync run
+          } catch (strikeErr) {
+            const msg = strikeErr instanceof Error ? strikeErr.message : JSON.stringify(strikeErr);
+            console.error(`[sync] failed to add strike for ${email} cwId=${cwId}: ${msg}`);
+            studentErrors.push(`strike:${email}:${cwId}:${msg}`);
+            strikesSkipped++;
+          }
+        }
       }
+
+      const freshStrikes = await getActiveStrikes(courseId, email, course.bimestre_activo);
+      const strikesActive = freshStrikes.length;
+      const blocked = strikesActive >= 3;
+
+      await upsertGameState({
+        course_id: courseId,
+        student_email: email,
+        bimestre: course.bimestre_activo,
+        xp_total: blocked ? 0 : xpTotal,
+        level: blocked ? 1 : nivel,
+        strikes_active: strikesActive,
+        blocked,
+        blocked_at: blocked ? new Date().toISOString() : null,
+      });
+    } catch (studentErr) {
+      const msg = studentErr instanceof Error ? studentErr.message : String(studentErr);
+      console.error(`[sync] failed to process student ${email}: ${msg}`);
+      studentErrors.push(`student:${email}:${msg}`);
     }
-
-    const freshStrikes = await getActiveStrikes(courseId, email, course.bimestre_activo);
-    const strikesActive = freshStrikes.length;
-    const blocked = strikesActive >= 3;
-
-    await upsertGameState({
-      course_id: courseId,
-      student_email: email,
-      bimestre: course.bimestre_activo,
-      xp_total: blocked ? 0 : xpTotal,
-      level: blocked ? 1 : nivel,
-      strikes_active: strikesActive,
-      blocked,
-      blocked_at: blocked ? new Date().toISOString() : null,
-    });
   }
 
-  return { synced: true, studentCount: roster.length };
+  if (studentErrors.length > 0) {
+    console.warn(`[sync] completed with ${studentErrors.length} errors:`, studentErrors);
+  }
+
+  return {
+    synced: true,
+    studentCount: roster.length,
+    strikesCreated,
+    strikesSkipped,
+    errors: studentErrors.length > 0 ? studentErrors : undefined,
+  };
 }

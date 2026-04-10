@@ -194,21 +194,33 @@ export default function MisionesGrid({ pendientes, completadas, xpTotal, nivel, 
             </span>
           </div>
           <div className="rounded-xl border border-[#1e3320] bg-[#0F2411] overflow-hidden">
-            {completadas.map((m, i) => (
-              <div
-                key={m.id}
-                data-card-completada
-                className={`flex items-center gap-3 px-5 py-3 ${i !== completadas.length - 1 ? "border-b border-[#1e3320]" : ""}`}
-              >
-                <Check size={12} className="text-[#8fbc8f]/50 shrink-0" />
-                <span className="text-[10px] uppercase tracking-wider font-semibold text-[#9aab8a]/40 shrink-0 w-8">{m.tipo}</span>
-                <span className="text-sm text-[#f5f0e8]/50 truncate flex-1">{m.title}</span>
-                <div className="flex items-center gap-1 shrink-0">
-                  <Zap size={10} className="text-[#8fbc8f]/40" />
-                  <span className="text-[11px] text-[#8fbc8f]/50 tabular-nums">+{m.xpReward.toLocaleString("es-AR")} XP</span>
+            {completadas.map((m, i) => {
+              const fechaEntrega = m.submittedAt
+                ? m.submittedAt.toLocaleDateString("es-AR", { day: "numeric", month: "short" })
+                : m.dueAt
+                ? m.dueAt.toLocaleDateString("es-AR", { day: "numeric", month: "short" })
+                : null;
+              return (
+                <div
+                  key={m.id}
+                  data-card-completada
+                  className={`flex items-center gap-3 px-5 py-3 group ${i !== completadas.length - 1 ? "border-b border-[#1e3320]" : ""}`}
+                >
+                  <Check size={12} className="text-[#8fbc8f]/50 shrink-0" />
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-[#9aab8a]/40 shrink-0 w-8">{m.tipo}</span>
+                  <span className="text-sm text-[#f5f0e8]/50 truncate min-w-0">{m.title}</span>
+                  {/* Leader dots */}
+                  <span className="flex-1 border-b border-dotted border-[#1e3320] group-hover:border-[#9aab8a]/20 transition-colors mx-2 mb-0.5 min-w-4" />
+                  {fechaEntrega && (
+                    <span className="text-[10px] text-[#9aab8a]/30 tabular-nums shrink-0">{fechaEntrega}</span>
+                  )}
+                  <div className="flex items-center gap-1 shrink-0 ml-3">
+                    <Zap size={10} className="text-[#8fbc8f]/40" />
+                    <span className="text-[11px] text-[#8fbc8f]/50 tabular-nums">+{m.xpReward.toLocaleString("es-AR")} XP</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}
