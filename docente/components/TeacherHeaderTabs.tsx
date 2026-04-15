@@ -21,13 +21,13 @@ export default function TeacherHeaderTabs({ courses }: Props) {
     <div className="flex items-center gap-1">
       <Link
         href="/teacher"
-        className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
+        className={`border px-3 py-1.5 text-[11px] font-serif uppercase tracking-[0.15em] transition-colors ${
           pathname === "/teacher" || pathname.startsWith("/teacher/config")
-            ? "bg-[#c9a227]/20 text-[#c9a227]"
-            : "text-[#9aab8a] hover:text-[#f5f0e8]"
+            ? "border-[rgba(200,168,75,0.45)] bg-[rgba(200,168,75,0.1)] text-[rgba(200,168,75,0.9)]"
+            : "border-[rgba(160,125,55,0.2)] text-[rgba(160,125,55,0.5)] hover:text-[rgba(200,168,75,0.75)] hover:border-[rgba(160,125,55,0.35)]"
         }`}
       >
-        Home
+        Inicio
       </Link>
       {courses.map((course) => {
         const isActive = pathname === `/teacher/courses/${course.id}`;
@@ -36,10 +36,10 @@ export default function TeacherHeaderTabs({ courses }: Props) {
             key={course.id}
             href={`/teacher/courses/${course.id}?tab=resumen`}
             title={course.name}
-            className={`max-w-[160px] truncate rounded-md px-3 py-1.5 text-sm transition-colors ${
+            className={`max-w-[160px] truncate border px-3 py-1.5 text-[11px] font-serif transition-colors ${
               isActive
-                ? "bg-[#c9a227]/20 text-[#c9a227]"
-                : "text-[#9aab8a] hover:text-[#f5f0e8]"
+                ? "border-[rgba(200,168,75,0.45)] bg-[rgba(200,168,75,0.1)] text-[rgba(200,168,75,0.9)]"
+                : "border-[rgba(160,125,55,0.2)] text-[rgba(160,125,55,0.5)] hover:text-[rgba(200,168,75,0.75)] hover:border-[rgba(160,125,55,0.35)]"
             }`}
           >
             {course.name}

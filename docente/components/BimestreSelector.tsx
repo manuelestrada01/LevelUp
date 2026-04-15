@@ -27,8 +27,8 @@ export default function BimestreSelector({ currentBimestre, activeBimestre }: Pr
   const isActivo = !searchParams.has("bimestre");
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs text-[#9aab8a]">Bimestre:</span>
+    <div className="flex items-center gap-2 flex-wrap">
+      <span className="text-[11px] font-serif uppercase tracking-[0.22em] text-[rgba(160,125,55,0.55)]">Bimestre:</span>
       {BIMESTRES.map((b) => {
         const isSelected = !isActivo && currentBimestre === b;
         const isActiveB = b === activeBimestre;
@@ -36,27 +36,27 @@ export default function BimestreSelector({ currentBimestre, activeBimestre }: Pr
           <button
             key={b}
             onClick={() => selectBimestre(b)}
-            className={`rounded-md px-3 py-1 text-xs transition-colors ${
+            className={`border px-3 py-1 text-[11px] font-serif uppercase tracking-[0.15em] transition-colors ${
               isSelected
-                ? "bg-[#c9a227] font-medium text-[#0d1a0f]"
-                : `border text-[#9aab8a] hover:text-[#f5f0e8] ${
-                    isActiveB ? "border-[#c9a227]/40" : "border-[#1e3320]"
-                  } hover:border-[#c9a227]/40`
+                ? "border-[rgba(200,168,75,0.6)] bg-[rgba(200,168,75,0.15)] text-[rgba(200,168,75,0.95)]"
+                : isActiveB
+                ? "border-[rgba(200,168,75,0.35)] text-[rgba(160,125,55,0.7)] hover:border-[rgba(200,168,75,0.55)] hover:text-[rgba(200,168,75,0.9)]"
+                : "border-[rgba(160,125,55,0.2)] text-[rgba(160,125,55,0.45)] hover:border-[rgba(160,125,55,0.38)] hover:text-[rgba(200,168,75,0.75)]"
             }`}
           >
             {b}
             {isActiveB && !isSelected && (
-              <span className="ml-1 text-[10px] text-[#c9a227]">●</span>
+              <span className="ml-1 text-[8px] text-[rgba(200,168,75,0.7)]">●</span>
             )}
           </button>
         );
       })}
       <button
         onClick={() => selectBimestre(null)}
-        className={`rounded-md px-3 py-1 text-xs transition-colors ${
+        className={`border px-3 py-1 text-[11px] font-serif uppercase tracking-[0.15em] transition-colors ${
           isActivo
-            ? "bg-[#c9a227] font-medium text-[#0d1a0f]"
-            : "border border-[#1e3320] text-[#9aab8a] hover:border-[#c9a227]/40 hover:text-[#f5f0e8]"
+            ? "border-[rgba(200,168,75,0.6)] bg-[rgba(200,168,75,0.15)] text-[rgba(200,168,75,0.95)]"
+            : "border-[rgba(160,125,55,0.2)] text-[rgba(160,125,55,0.45)] hover:border-[rgba(160,125,55,0.38)] hover:text-[rgba(200,168,75,0.75)]"
         }`}
       >
         Activo

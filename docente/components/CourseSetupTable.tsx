@@ -68,9 +68,9 @@ export default function CourseSetupTable({ courseId, items, tipos }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="overflow-hidden rounded-xl border border-[#1e3320]">
+      <div className="chronicle-stone relative overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-[#1a2e1c] text-left text-xs text-[#9aab8a]">
+          <thead className="text-left text-xs font-serif">
             <tr>
               <th className="px-4 py-3">Tarea en Classroom</th>
               <th className="px-4 py-3">Categoría en Classroom</th>

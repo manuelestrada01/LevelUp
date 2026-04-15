@@ -65,18 +65,19 @@ export default async function CourseDetailPage({
       <div className="flex items-center gap-4">
         <Link
           href="/teacher"
-          className="flex items-center gap-1 text-sm text-[#9aab8a] hover:text-[#f5f0e8]"
+          className="flex items-center gap-1 text-[11px] font-serif uppercase tracking-[0.15em] text-[rgba(160,125,55,0.5)] hover:text-[rgba(200,168,75,0.85)] transition-colors"
         >
-          <ArrowLeft size={14} />
+          <ArrowLeft size={12} />
           Inicio
         </Link>
+        <div className="h-px flex-1 bg-gradient-to-r from-[rgba(160,125,55,0.15)] to-transparent" />
       </div>
 
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="font-serif text-2xl text-[#f5f0e8]">{course.name}</h1>
+          <h1 className="font-serif text-2xl font-semibold text-[rgba(232,224,208,0.92)]">{course.name}</h1>
           {course.section && (
-            <p className="mt-0.5 text-sm text-[#9aab8a]">
+            <p className="mt-0.5 text-sm font-serif text-[rgba(160,125,55,0.55)]">
               {course.section} · {course.year}° año · {selectedBimestre}
             </p>
           )}
@@ -85,7 +86,7 @@ export default async function CourseDetailPage({
           <SyncStatus courseId={id} />
           <Link
             href={`/teacher/courses/${id}/setup`}
-            className="flex items-center gap-1 rounded-lg border border-[#1e3320] px-3 py-2 text-xs text-[#9aab8a] hover:border-[#c9a227]/40 hover:text-[#c9a227]"
+            className="flex items-center gap-1.5 border border-[rgba(160,125,55,0.28)] bg-[rgba(160,125,55,0.04)] px-3 py-2 text-[11px] font-serif uppercase tracking-[0.15em] text-[rgba(160,125,55,0.6)] hover:border-[rgba(200,168,75,0.45)] hover:text-[rgba(200,168,75,0.85)] transition-colors"
           >
             <Settings size={12} />
             Configurar tareas
@@ -93,7 +94,7 @@ export default async function CourseDetailPage({
         </div>
       </div>
 
-      <Suspense fallback={<div className="h-10 border-b border-[#1e3320]" />}>
+      <Suspense fallback={<div className="h-10 border-b border-[rgba(160,125,55,0.2)]" />}>
         <CourseTabNav courseId={id} />
       </Suspense>
 

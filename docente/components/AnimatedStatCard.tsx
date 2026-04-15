@@ -48,11 +48,18 @@ export default function AnimatedStatCard({
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.07, duration: 0.4, ease: "easeOut" }}
-      className="rounded-xl border border-[#1e3320] bg-[#1a2e1c] p-4"
+      className="chronicle-stone relative p-4"
     >
-      <p className="text-xs text-[#9aab8a]">{label}</p>
+      {/* Corner ◆ marks */}
+      <span className="pointer-events-none absolute top-[3px] left-[3px] text-[5px] text-[rgba(160,125,55,0.35)] leading-none select-none z-10">◆</span>
+      <span className="pointer-events-none absolute top-[3px] right-[3px] text-[5px] text-[rgba(160,125,55,0.35)] leading-none select-none z-10">◆</span>
+      <span className="pointer-events-none absolute bottom-[3px] left-[3px] text-[5px] text-[rgba(160,125,55,0.35)] leading-none select-none z-10">◆</span>
+      <span className="pointer-events-none absolute bottom-[3px] right-[3px] text-[5px] text-[rgba(160,125,55,0.35)] leading-none select-none z-10">◆</span>
+      {/* Candlelight glow */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.04)_0%,transparent_60%)]" />
+      <p className="relative z-10 text-[11px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.6)]">{label}</p>
       <p
-        className={`mt-1 font-serif text-2xl font-bold tabular-nums ${
+        className={`relative z-10 mt-1 font-serif text-2xl font-bold tabular-nums ${
           danger && value > 0 ? "text-[#c0392b]" : "text-[#c9a227]"
         }`}
       >

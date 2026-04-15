@@ -57,7 +57,7 @@ export default function BimestreConfigEditor({ courseId, initialEntries, xpConfi
     <div className="flex flex-col gap-4">
       <div className="overflow-x-auto rounded-xl border border-[#1e3320]">
         <table className="w-full text-sm">
-          <thead className="bg-[#1a2e1c] text-left text-xs text-[#9aab8a]">
+          <thead className="text-left text-xs font-serif">
             <tr>
               <th className="px-4 py-3">Bimestre</th>
               <th className="px-4 py-3">Inicio</th>

@@ -75,36 +75,40 @@ export default function TalentConfigEditor({ initialTalents }: Props) {
         {talents.map((t) => (
           <div
             key={t.slug}
-            className={`flex flex-col gap-2 rounded-xl border p-4 ${
-              t.active ? "border-[#1e3320] bg-[#1a2e1c]" : "border-[#1e3320] bg-[#0d1a0f] opacity-60"
-            }`}
+            className={`chronicle-stone relative flex flex-col gap-2 p-4 ${!t.active ? "opacity-55" : ""}`}
           >
-            <div className="flex items-start justify-between">
-              <h4 className="font-medium text-[#f5f0e8]">{t.name}</h4>
+            {/* Corner ◆ marks */}
+            <span className="pointer-events-none absolute top-[3px] left-[3px] text-[5px] text-[rgba(160,125,55,0.3)] leading-none select-none z-10">◆</span>
+            <span className="pointer-events-none absolute top-[3px] right-[3px] text-[5px] text-[rgba(160,125,55,0.3)] leading-none select-none z-10">◆</span>
+            <span className="pointer-events-none absolute bottom-[3px] left-[3px] text-[5px] text-[rgba(160,125,55,0.3)] leading-none select-none z-10">◆</span>
+            <span className="pointer-events-none absolute bottom-[3px] right-[3px] text-[5px] text-[rgba(160,125,55,0.3)] leading-none select-none z-10">◆</span>
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.04)_0%,transparent_60%)]" />
+            <div className="relative z-10 flex items-start justify-between">
+              <h4 className="font-serif font-semibold text-[rgba(232,224,208,0.92)]">{t.name}</h4>
               {!t.active && (
-                <span className="text-[10px] text-[#9aab8a] rounded border border-[#1e3320] px-1.5 py-0.5">
+                <span className="border border-[rgba(160,125,55,0.2)] px-1.5 py-0.5 text-[10px] font-serif uppercase tracking-widest text-[rgba(160,125,55,0.4)]">
                   Inactivo
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#9aab8a] line-clamp-2">{t.description}</p>
-            <div className="flex flex-wrap gap-1">
+            <p className="relative z-10 text-xs font-serif text-[rgba(160,125,55,0.55)] line-clamp-2">{t.description}</p>
+            <div className="relative z-10 flex flex-wrap gap-1">
               {t.attributes.filter(Boolean).map((a) => (
-                <span key={a} className="rounded border border-[#c9a227]/30 px-1.5 py-0.5 text-[10px] text-[#c9a227]">
+                <span key={a} className="border border-[rgba(160,125,55,0.3)] bg-[rgba(160,125,55,0.06)] px-1.5 py-0.5 text-[10px] font-serif uppercase tracking-widest text-[rgba(200,168,75,0.7)]">
                   {a}
                 </span>
               ))}
             </div>
-            <div className="flex gap-1 pt-1">
+            <div className="relative z-10 flex gap-1 pt-1 border-t border-[rgba(160,125,55,0.1)] mt-1">
               <button
                 onClick={() => startEdit(t)}
-                className="flex-1 rounded px-2 py-1 text-xs text-[#9aab8a] hover:bg-[#1a2e1c] hover:text-[#f5f0e8]"
+                className="flex-1 px-2 py-1 text-[11px] font-serif uppercase tracking-[0.12em] text-[rgba(160,125,55,0.55)] hover:text-[rgba(200,168,75,0.85)] transition-colors"
               >
                 Editar
               </button>
               <button
                 onClick={() => handleDelete(t.slug)}
-                className="rounded p-1 text-[#9aab8a] hover:bg-[#c0392b]/10 hover:text-[#c0392b]"
+                className="p-1 text-[rgba(160,125,55,0.35)] hover:text-[#c0392b] transition-colors"
               >
                 <Trash2 size={14} />
               </button>
@@ -114,7 +118,7 @@ export default function TalentConfigEditor({ initialTalents }: Props) {
 
         <button
           onClick={startNew}
-          className="flex min-h-[120px] items-center justify-center gap-2 rounded-xl border border-dashed border-[#1e3320] text-[#9aab8a] hover:border-[#c9a227]/40 hover:text-[#c9a227]"
+          className="flex min-h-[120px] items-center justify-center gap-2 border border-dashed border-[rgba(160,125,55,0.2)] text-[rgba(160,125,55,0.4)] hover:border-[rgba(200,168,75,0.45)] hover:text-[rgba(200,168,75,0.75)] transition-colors"
         >
           <Plus size={16} />
           <span className="text-sm">Nuevo talento</span>
@@ -137,39 +141,45 @@ export default function TalentConfigEditor({ initialTalents }: Props) {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 8 }}
               transition={{ duration: 0.18, ease: "easeOut" }}
-              className="relative w-full max-w-lg rounded-xl border border-[#1e3320] bg-[#0d1a0f] p-6 shadow-2xl"
+              className="chronicle-stone relative w-full max-w-lg p-6 shadow-2xl"
             >
-              <div className="flex items-center justify-between mb-5">
-                <h4 className="font-serif text-base text-[#f5f0e8]">
+              {/* Corner bracket ornaments */}
+              <div className="pointer-events-none absolute top-0 left-0 h-8 w-8 border-t-2 border-l-2 border-[rgba(200,168,75,0.4)]" />
+              <div className="pointer-events-none absolute top-0 right-0 h-8 w-8 border-t-2 border-r-2 border-[rgba(200,168,75,0.4)]" />
+              <div className="pointer-events-none absolute bottom-0 left-0 h-8 w-8 border-b-2 border-l-2 border-[rgba(200,168,75,0.4)]" />
+              <div className="pointer-events-none absolute bottom-0 right-0 h-8 w-8 border-b-2 border-r-2 border-[rgba(200,168,75,0.4)]" />
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.04)_0%,transparent_60%)]" />
+              <div className="relative z-10 flex items-center justify-between mb-5">
+                <h4 className="font-serif text-base font-semibold text-[rgba(232,224,208,0.92)]">
                   {isNew ? "Nuevo Talento" : `Editar: ${editing.name}`}
                 </h4>
                 <button
                   onClick={() => setEditing(null)}
-                  className="text-[#9aab8a] hover:text-[#f5f0e8]"
+                  className="text-[rgba(160,125,55,0.5)] hover:text-[rgba(200,168,75,0.85)] transition-colors"
                 >
                   <X size={16} />
                 </button>
               </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="relative z-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <label className="flex flex-col gap-1">
-                  <span className="text-xs text-[#9aab8a]">Slug</span>
+                  <span className="text-[10px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.55)]">Slug</span>
                   <input
                     value={editing.slug}
                     onChange={(e) => setEditing({ ...editing, slug: e.target.value })}
                     disabled={!isNew}
-                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227] disabled:opacity-50"
+                    className="border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] px-3 py-2 text-sm font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.55)] disabled:opacity-40"
                   />
                 </label>
                 <label className="flex flex-col gap-1">
-                  <span className="text-xs text-[#9aab8a]">Nombre</span>
+                  <span className="text-[10px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.55)]">Nombre</span>
                   <input
                     value={editing.name}
                     onChange={(e) => setEditing({ ...editing, name: e.target.value })}
-                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                    className="border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] px-3 py-2 text-sm font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.55)]"
                   />
                 </label>
                 <label className="flex flex-col gap-1 sm:col-span-2">
-                  <span className="text-xs text-[#9aab8a]">Atributos (máx. 2)</span>
+                  <span className="text-[10px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.55)]">Atributos (máx. 2)</span>
                   <div className="flex gap-2">
                     <input
                       value={editing.attributes[0] ?? ""}
@@ -177,7 +187,7 @@ export default function TalentConfigEditor({ initialTalents }: Props) {
                         setEditing({ ...editing, attributes: [e.target.value, editing.attributes[1] ?? ""] })
                       }
                       placeholder="Atributo 1"
-                      className="flex-1 rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                      className="flex-1 border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] px-2 py-2 text-sm font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.55)] placeholder:text-[rgba(160,125,55,0.3)]"
                     />
                     <input
                       value={editing.attributes[1] ?? ""}
@@ -185,36 +195,36 @@ export default function TalentConfigEditor({ initialTalents }: Props) {
                         setEditing({ ...editing, attributes: [editing.attributes[0] ?? "", e.target.value] })
                       }
                       placeholder="Atributo 2"
-                      className="flex-1 rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                      className="flex-1 border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] px-2 py-2 text-sm font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.55)] placeholder:text-[rgba(160,125,55,0.3)]"
                     />
                   </div>
                 </label>
                 <label className="flex flex-col gap-1 sm:col-span-2">
-                  <span className="text-xs text-[#9aab8a]">Descripción</span>
+                  <span className="text-[10px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.55)]">Descripción</span>
                   <textarea
                     value={editing.description}
                     onChange={(e) => setEditing({ ...editing, description: e.target.value })}
                     rows={3}
-                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227] resize-none"
+                    className="border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] px-3 py-2 text-sm font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.55)] resize-none"
                   />
                 </label>
               </div>
-              <div className="mt-5 flex items-center gap-3">
+              <div className="relative z-10 mt-5 flex items-center gap-3">
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex items-center gap-2 rounded-lg bg-[#c9a227] px-4 py-2 text-sm font-medium text-[#0d1a0f] disabled:opacity-50"
+                  className="flex items-center gap-2 border border-[rgba(200,168,75,0.5)] bg-[rgba(200,168,75,0.12)] px-4 py-2 text-sm font-serif uppercase tracking-[0.12em] text-[rgba(200,168,75,0.9)] disabled:opacity-40 hover:bg-[rgba(200,168,75,0.2)] transition-colors"
                 >
                   <Save size={14} />
                   {saving ? "Guardando..." : "Guardar"}
                 </button>
                 <button
                   onClick={() => setEditing(null)}
-                  className="rounded-lg px-4 py-2 text-sm text-[#9aab8a] hover:text-[#f5f0e8]"
+                  className="px-4 py-2 text-sm font-serif text-[rgba(160,125,55,0.5)] hover:text-[rgba(200,168,75,0.85)] transition-colors"
                 >
                   Cancelar
                 </button>
-                <label className="ml-auto flex items-center gap-2 text-sm text-[#9aab8a]">
+                <label className="ml-auto flex items-center gap-2 text-sm font-serif text-[rgba(160,125,55,0.6)]">
                   <input
                     type="checkbox"
                     checked={editing.active}

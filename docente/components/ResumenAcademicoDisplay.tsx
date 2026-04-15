@@ -50,9 +50,9 @@ export default function ResumenAcademicoDisplay({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="text-sm text-[#9aab8a]"
+        className="text-[11px] font-serif uppercase tracking-[0.22em] text-[rgba(160,125,55,0.5)]"
       >
-        Bimestre activo: <span className="text-[#c9a227]">{bimestre}</span>
+        Bimestre activo: <span className="text-[rgba(200,168,75,0.8)]">{bimestre}</span>
       </motion.p>
 
       {/* Stats */}
@@ -74,21 +74,22 @@ export default function ResumenAcademicoDisplay({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.25, ease: "easeOut" }}
-          className="rounded-xl border border-[#1e3320] bg-[#1a2e1c] p-5"
+          className="chronicle-stone relative p-5"
         >
-          <h3 className="mb-4 text-sm font-medium text-[#f5f0e8]">Top Clases Formativas</h3>
-          <div className="flex flex-col gap-2">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.04)_0%,transparent_60%)]" />
+          <h3 className="relative z-10 mb-4 text-[11px] font-serif uppercase tracking-[0.22em] text-[rgba(160,125,55,0.65)]">Top Clases Formativas</h3>
+          <div className="relative z-10 flex flex-col gap-2">
             {topClasses.map(({ slug, title, count }, i) => {
               const pct = Math.round((count / (topClasses[0]?.count ?? 1)) * 100);
               return (
                 <div key={slug} className="flex items-center gap-3">
-                  <span className="w-5 text-right text-xs text-[#9aab8a]">{i + 1}.</span>
+                  <span className="w-5 text-right text-[11px] font-serif text-[rgba(160,125,55,0.45)]">{i + 1}.</span>
                   <div className="flex flex-1 items-center gap-3">
-                    <span className="min-w-[120px] text-sm text-[#f5f0e8]">{title}</span>
+                    <span className="min-w-[120px] text-sm font-serif text-[rgba(232,224,208,0.85)]">{title}</span>
                     <div className="flex flex-1 items-center gap-2">
-                      <div className="flex-1 h-2 rounded-full bg-[#0d1a0f] overflow-hidden">
+                      <div className="flex-1 h-1.5 bg-[rgba(160,125,55,0.1)] overflow-hidden">
                         <motion.div
-                          className="h-full rounded-full bg-[#c9a227]/60"
+                          className="h-full bg-[rgba(200,168,75,0.55)]"
                           initial={{ width: 0 }}
                           animate={{ width: `${pct}%` }}
                           transition={{
@@ -99,7 +100,7 @@ export default function ResumenAcademicoDisplay({
                           style={{ minWidth: count > 0 ? "4px" : "0" }}
                         />
                       </div>
-                      <span className="text-xs text-[#9aab8a]">
+                      <span className="text-xs font-serif text-[rgba(160,125,55,0.5)]">
                         {count} alumno{count !== 1 ? "s" : ""}
                       </span>
                     </div>
@@ -116,18 +117,19 @@ export default function ResumenAcademicoDisplay({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
-        className="rounded-xl border border-[#1e3320] bg-[#1a2e1c] p-5"
+        className="chronicle-stone relative p-5"
       >
-        <h3 className="mb-4 text-sm font-medium text-[#f5f0e8]">Distribución de XP</h3>
-        <div className="flex h-28 items-end gap-2">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.04)_0%,transparent_60%)]" />
+        <h3 className="relative z-10 mb-4 text-[11px] font-serif uppercase tracking-[0.22em] text-[rgba(160,125,55,0.65)]">Distribución de XP</h3>
+        <div className="relative z-10 flex h-28 items-end gap-2">
           {xpDist.map(({ label, count }, i) => {
             const targetH = Math.round((count / maxCount) * 80);
             return (
               <div key={label} className="flex flex-1 flex-col items-center gap-1">
-                <span className="text-xs text-[#9aab8a]">{count}</span>
+                <span className="text-xs font-serif text-[rgba(160,125,55,0.5)]">{count}</span>
                 <div className="flex w-full items-end" style={{ height: "80px" }}>
                   <motion.div
-                    className="w-full rounded-t bg-[#c9a227]/70"
+                    className="w-full bg-[rgba(200,168,75,0.55)]"
                     initial={{ height: 0 }}
                     animate={{ height: count > 0 ? targetH : 0 }}
                     transition={{
@@ -138,7 +140,7 @@ export default function ResumenAcademicoDisplay({
                     style={{ minHeight: count > 0 ? "4px" : "0" }}
                   />
                 </div>
-                <span className="text-[10px] text-[#9aab8a]">{label}</span>
+                <span className="text-[10px] font-serif text-[rgba(160,125,55,0.45)]">{label}</span>
               </div>
             );
           })}
@@ -150,10 +152,11 @@ export default function ResumenAcademicoDisplay({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.35, ease: "easeOut" }}
-        className="rounded-xl border border-[#1e3320] bg-[#1a2e1c] p-5"
+        className="chronicle-stone relative p-5"
       >
-        <h3 className="mb-4 text-sm font-medium text-[#f5f0e8]">Distribución de Strikes</h3>
-        <div className="flex gap-4">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.04)_0%,transparent_60%)]" />
+        <h3 className="relative z-10 mb-4 text-[11px] font-serif uppercase tracking-[0.22em] text-[rgba(160,125,55,0.65)]">Distribución de Strikes</h3>
+        <div className="relative z-10 flex gap-4">
           {strikeDist.map(({ n, count }, i) => (
             <motion.div
               key={n}
@@ -163,13 +166,13 @@ export default function ResumenAcademicoDisplay({
               className="flex flex-col items-center gap-1"
             >
               <span
-                className={`text-xl font-bold tabular-nums ${
-                  n === 3 ? "text-[#c0392b]" : n === 2 ? "text-amber-400" : "text-[#8fbc8f]"
+                className={`font-serif text-xl font-bold tabular-nums ${
+                  n === 3 ? "text-[#c0392b]" : n === 2 ? "text-amber-400" : "text-[rgba(143,188,143,0.85)]"
                 }`}
               >
                 {count}
               </span>
-              <span className="text-xs text-[#9aab8a]">
+              <span className="text-[11px] font-serif text-[rgba(160,125,55,0.45)]">
                 {n} strike{n !== 1 ? "s" : ""}
               </span>
             </motion.div>

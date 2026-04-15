@@ -120,7 +120,7 @@ export default function DestacadosGremioEditor({ studentEmail, exceptions }: Pro
   if (exceptions.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-[#1e3320] bg-[#1a2e1c] p-4">
+    <div className="chronicle-stone relative p-4">
       <h2 className="mb-3 font-serif text-base text-[#f5f0e8]">Destacados del Gremio</h2>
       <div className="space-y-1">
         {exceptions.map((ex) => (

@@ -42,13 +42,16 @@ export default function TeacherSidebar({ teacherName, teacherImage }: Props) {
   const isCourseMode = !!courseId;
 
   return (
-    <aside className="flex w-16 flex-col items-center border-r border-[#1e3320] bg-[#0d1a0f] py-4">
-      <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-full bg-[#1e3320]">
+    <aside className="relative flex w-16 flex-col items-center border-r border-[rgba(160,125,55,0.2)] bg-[#0c0d11] py-4">
+      {/* Right gold divider line */}
+      <div className="pointer-events-none absolute top-0 right-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[rgba(160,125,55,0.2)] to-transparent" />
+
+      <div className="mb-6 flex h-10 w-10 items-center justify-center border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.06)]" style={{ clipPath: "polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)" }}>
         {teacherImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={teacherImage} alt={teacherName} className="h-10 w-10 rounded-full" />
+          <img src={teacherImage} alt={teacherName} className="h-10 w-10 object-cover" style={{ clipPath: "polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)" }} />
         ) : (
-          <span className="text-sm font-bold text-[#c9a227]">{teacherName[0]}</span>
+          <span className="text-sm font-bold font-serif text-[#c9a227]">{teacherName[0]}</span>
         )}
       </div>
 
@@ -57,11 +60,11 @@ export default function TeacherSidebar({ teacherName, teacherImage }: Props) {
           <Link
             href="/teacher"
             title="Volver al inicio"
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-[#9aab8a] transition-colors hover:bg-[#1e3320] hover:text-[#f5f0e8]"
+            className="flex h-10 w-10 items-center justify-center text-[rgba(160,125,55,0.4)] transition-colors hover:text-[rgba(200,168,75,0.85)]"
           >
             <ArrowLeft size={18} />
           </Link>
-          <div className="mx-auto my-1 w-8 border-t border-[#1e3320]" />
+          <div className="mx-auto my-1 w-8 border-t border-[rgba(160,125,55,0.15)]" />
           {COURSE_TABS.map(({ tab, label, icon: Icon }) => {
             const isActive = activeTab === tab;
             return (
@@ -69,10 +72,10 @@ export default function TeacherSidebar({ teacherName, teacherImage }: Props) {
                 key={tab}
                 href={`/teacher/courses/${courseId}?tab=${tab}`}
                 title={label}
-                className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${
+                className={`flex h-10 w-10 items-center justify-center transition-colors ${
                   isActive
-                    ? "bg-[#c9a227]/20 text-[#c9a227]"
-                    : "text-[#9aab8a] hover:bg-[#1e3320] hover:text-[#f5f0e8]"
+                    ? "bg-[rgba(200,168,75,0.12)] text-[rgba(200,168,75,0.9)]"
+                    : "text-[rgba(160,125,55,0.4)] hover:text-[rgba(200,168,75,0.75)]"
                 }`}
               >
                 <Icon size={18} />
@@ -91,10 +94,10 @@ export default function TeacherSidebar({ teacherName, teacherImage }: Props) {
                 key={href}
                 href={href}
                 title={label}
-                className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${
+                className={`flex h-10 w-10 items-center justify-center transition-colors ${
                   active
-                    ? "bg-[#c9a227]/20 text-[#c9a227]"
-                    : "text-[#9aab8a] hover:bg-[#1e3320] hover:text-[#f5f0e8]"
+                    ? "bg-[rgba(200,168,75,0.12)] text-[rgba(200,168,75,0.9)]"
+                    : "text-[rgba(160,125,55,0.4)] hover:text-[rgba(200,168,75,0.75)]"
                 }`}
               >
                 <Icon size={18} />
@@ -104,11 +107,11 @@ export default function TeacherSidebar({ teacherName, teacherImage }: Props) {
         </nav>
       )}
 
-      <div className="mt-2 w-8 border-t border-[#1e3320]" />
+      <div className="mt-2 w-8 border-t border-[rgba(160,125,55,0.15)]" />
       <button
         onClick={() => signOut({ callbackUrl: "/login" })}
         title="Cerrar sesión"
-        className="mt-2 flex h-10 w-10 items-center justify-center rounded-lg text-[#c0392b]/60 transition-colors hover:bg-[#c0392b]/10 hover:text-[#c0392b]"
+        className="mt-2 flex h-10 w-10 items-center justify-center text-[rgba(192,57,43,0.45)] transition-colors hover:text-[#c0392b]"
       >
         <LogOut size={18} />
       </button>

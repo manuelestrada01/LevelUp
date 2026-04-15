@@ -152,36 +152,43 @@ export default function AccionModal({ courseId, students, talents, action, trigg
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-2 rounded-lg bg-[#c9a227] px-4 py-2 text-sm font-medium text-[#0d1a0f] transition-opacity hover:opacity-90"
+          className="flex items-center gap-2 border border-[rgba(200,168,75,0.45)] bg-[rgba(200,168,75,0.1)] px-4 py-2 text-[11px] font-serif uppercase tracking-[0.18em] text-[rgba(200,168,75,0.85)] transition-colors hover:bg-[rgba(200,168,75,0.18)]"
         >
-          <Plus size={14} />
+          <Plus size={13} />
           Nueva Acción
         </button>
       )}
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="flex w-full max-w-2xl flex-col gap-5 rounded-2xl border border-[#1e3320] bg-[#0d1a0f] p-6 shadow-2xl">
-            <div className="flex items-center justify-between">
-              <h2 className="font-serif text-lg text-[#f5f0e8]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4" style={{ backdropFilter: "blur(2px)" }}>
+          <div className="chronicle-stone relative flex w-full max-w-2xl flex-col gap-5 p-6 shadow-2xl">
+            {/* Corner bracket ornaments */}
+            <div className="pointer-events-none absolute top-0 left-0 h-8 w-8 border-t-2 border-l-2 border-[rgba(200,168,75,0.4)]" />
+            <div className="pointer-events-none absolute top-0 right-0 h-8 w-8 border-t-2 border-r-2 border-[rgba(200,168,75,0.4)]" />
+            <div className="pointer-events-none absolute bottom-0 left-0 h-8 w-8 border-b-2 border-l-2 border-[rgba(200,168,75,0.4)]" />
+            <div className="pointer-events-none absolute bottom-0 right-0 h-8 w-8 border-b-2 border-r-2 border-[rgba(200,168,75,0.4)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.04)_0%,transparent_60%)]" />
+
+            <div className="relative z-10 flex items-center justify-between">
+              <h2 className="font-serif text-lg font-semibold text-[rgba(232,224,208,0.92)]">
                 {isEdit ? "Editar Acción" : "Nueva Acción"}
               </h2>
-              <button onClick={close} className="text-[#9aab8a] hover:text-[#f5f0e8]">
+              <button onClick={close} className="text-[rgba(160,125,55,0.5)] hover:text-[rgba(200,168,75,0.85)] transition-colors">
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <form onSubmit={handleSubmit} className="relative z-10 flex flex-col gap-4">
               {/* Tipo */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-[#9aab8a]">Tipo de acción</label>
+                <label className="text-[10px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.55)]">Tipo de acción</label>
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value as ActionType)}
-                  className="rounded-lg border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                  className="border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] px-3 py-2 text-sm font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.55)]"
                 >
                   {ACTION_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>
+                    <option key={o.value} value={o.value} className="bg-[#131418]">
                       {o.label}
                     </option>
                   ))}
@@ -191,7 +198,7 @@ export default function AccionModal({ courseId, students, talents, action, trigg
               {/* Razón de strike */}
               {type === "strike_force" && (
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs text-[#9aab8a]">Motivo del strike</label>
+                  <label className="text-[10px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.55)]">Motivo del strike</label>
                   <div className="flex flex-col gap-1.5">
                     {STRIKE_REASONS.map((r) => (
                       <label key={r.value} className="flex cursor-pointer items-center gap-2">
@@ -203,7 +210,7 @@ export default function AccionModal({ courseId, students, talents, action, trigg
                           onChange={() => setStrikeReason(r.value)}
                           className="accent-[#c9a227]"
                         />
-                        <span className="text-sm text-[#f5f0e8]">{r.label}</span>
+                        <span className="text-sm font-serif text-[rgba(232,224,208,0.85)]">{r.label}</span>
                       </label>
                     ))}
                   </div>
@@ -213,13 +220,13 @@ export default function AccionModal({ courseId, students, talents, action, trigg
               {/* XP value */}
               {["xp_event", "xp_quality", "xp_extraordinary"].includes(type) && (
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs text-[#9aab8a]">XP a otorgar</label>
+                  <label className="text-[10px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.55)]">XP a otorgar</label>
                   <input
                     type="number"
                     min={1}
                     value={xpValue}
                     onChange={(e) => setXpValue(Number(e.target.value))}
-                    className="w-32 rounded-lg border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                    className="w-32 border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] px-3 py-2 text-sm font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.55)]"
                   />
                 </div>
               )}
@@ -227,14 +234,14 @@ export default function AccionModal({ courseId, students, talents, action, trigg
               {/* Talent selector */}
               {type === "talent" && (
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs text-[#9aab8a]">Talento</label>
+                  <label className="text-[10px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.55)]">Talento</label>
                   <select
                     value={talentSlug}
                     onChange={(e) => setTalentSlug(e.target.value)}
-                    className="rounded-lg border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                    className="border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] px-3 py-2 text-sm font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.55)]"
                   >
                     {talents.filter((t) => t.active).map((t) => (
-                      <option key={t.slug} value={t.slug}>
+                      <option key={t.slug} value={t.slug} className="bg-[#131418]">
                         {t.name}
                       </option>
                     ))}
@@ -244,7 +251,7 @@ export default function AccionModal({ courseId, students, talents, action, trigg
 
               {/* Descripción libre */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-[#9aab8a]">
+                <label className="text-[10px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.55)]">
                   {type === "strike_force" ? "Notas adicionales (opcional)" : "Descripción"}
                 </label>
                 <textarea
@@ -252,45 +259,45 @@ export default function AccionModal({ courseId, students, talents, action, trigg
                   onChange={(e) => setDescription(e.target.value)}
                   rows={2}
                   placeholder="Ingresá una descripción..."
-                  className="rounded-lg border border-[#1e3320] bg-[#1a2e1c] px-3 py-2 text-sm text-[#f5f0e8] outline-none focus:border-[#c9a227] resize-none"
+                  className="border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] px-3 py-2 text-sm font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.55)] resize-none placeholder:text-[rgba(160,125,55,0.3)]"
                 />
               </div>
 
               {/* Alumnos afectados */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs text-[#9aab8a]">
+                  <label className="text-[10px] font-serif uppercase tracking-[0.18em] text-[rgba(160,125,55,0.55)]">
                     Alumnos afectados ({selectedEmails.size} seleccionados)
                   </label>
-                  <div className="flex gap-2 text-xs">
-                    <button type="button" onClick={selectAll} className="flex items-center gap-1 text-[#9aab8a] hover:text-[#c9a227]">
+                  <div className="flex gap-2 text-[11px] font-serif">
+                    <button type="button" onClick={selectAll} className="flex items-center gap-1 text-[rgba(160,125,55,0.5)] hover:text-[rgba(200,168,75,0.85)] transition-colors">
                       <CheckSquare size={12} /> Todos
                     </button>
-                    <button type="button" onClick={deselectAll} className="flex items-center gap-1 text-[#9aab8a] hover:text-[#f5f0e8]">
+                    <button type="button" onClick={deselectAll} className="flex items-center gap-1 text-[rgba(160,125,55,0.5)] hover:text-[rgba(200,168,75,0.85)] transition-colors">
                       <Square size={12} /> Ninguno
                     </button>
                   </div>
                 </div>
 
                 <div className="relative">
-                  <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9aab8a]" />
+                  <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgba(160,125,55,0.45)]" />
                   <input
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Buscar alumno..."
-                    className="w-full rounded-lg border border-[#1e3320] bg-[#1a2e1c] py-2 pl-8 pr-3 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                    className="w-full border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] py-2 pl-8 pr-3 text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.55)] placeholder:text-[rgba(160,125,55,0.3)]"
                   />
                 </div>
 
-                <div className="max-h-48 overflow-y-auto rounded-lg border border-[#1e3320]">
+                <div className="max-h-48 overflow-y-auto border border-[rgba(160,125,55,0.2)]">
                   {filteredStudents.map((s) => {
                     const selected = selectedEmails.has(s.email);
                     return (
                       <label
                         key={s.email}
                         className={`flex cursor-pointer items-center gap-3 px-3 py-2 text-sm transition-colors ${
-                          selected ? "bg-[#c9a227]/10" : "hover:bg-[#1a2e1c]"
+                          selected ? "bg-[rgba(200,168,75,0.08)]" : "hover:bg-[rgba(160,125,55,0.04)]"
                         }`}
                       >
                         <input
@@ -299,9 +306,9 @@ export default function AccionModal({ courseId, students, talents, action, trigg
                           onChange={() => toggleStudent(s.email)}
                           className="accent-[#c9a227]"
                         />
-                        <span className="text-[#f5f0e8]">{s.displayName}</span>
+                        <span className="font-serif text-[rgba(232,224,208,0.85)]">{s.displayName}</span>
                         {s.displayName !== s.email && (
-                          <span className="text-xs text-[#9aab8a]">{s.email}</span>
+                          <span className="text-xs font-serif text-[rgba(160,125,55,0.45)]">{s.email}</span>
                         )}
                       </label>
                     );
@@ -309,20 +316,20 @@ export default function AccionModal({ courseId, students, talents, action, trigg
                 </div>
               </div>
 
-              {error && <p className="text-xs text-[#c0392b]">{error}</p>}
+              {error && <p className="text-xs font-serif text-[#c0392b]">{error}</p>}
 
               <div className="flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={close}
-                  className="rounded-lg border border-[#1e3320] px-4 py-2 text-sm text-[#9aab8a] hover:text-[#f5f0e8]"
+                  className="border border-[rgba(160,125,55,0.2)] px-4 py-2 text-sm font-serif text-[rgba(160,125,55,0.5)] hover:text-[rgba(200,168,75,0.85)] transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="rounded-lg bg-[#c9a227] px-5 py-2 text-sm font-medium text-[#0d1a0f] disabled:opacity-50"
+                  className="border border-[rgba(200,168,75,0.5)] bg-[rgba(200,168,75,0.12)] px-5 py-2 text-sm font-serif uppercase tracking-[0.12em] text-[rgba(200,168,75,0.9)] disabled:opacity-40 hover:bg-[rgba(200,168,75,0.2)] transition-colors"
                 >
                   {loading
                     ? isEdit ? "Guardando..." : "Ejecutando..."

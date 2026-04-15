@@ -28,16 +28,24 @@ export default async function CoursesPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="font-serif text-2xl text-[#f5f0e8]">Cursos</h1>
-        <p className="mt-1 text-sm text-[#9aab8a]">
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center gap-3">
+          <div className="h-px w-8 bg-gradient-to-r from-transparent via-[rgba(160,125,55,0.45)] to-transparent" />
+          <span className="text-[11px] font-serif uppercase tracking-[0.38em] text-[rgba(160,125,55,0.5)]">✦ ✦ ✦</span>
+          <div className="h-px flex-1 bg-gradient-to-r from-[rgba(160,125,55,0.25)] to-transparent" />
+        </div>
+        <h1 className="font-serif text-2xl font-semibold text-[rgba(232,224,208,0.92)]">Cursos</h1>
+        <p className="text-sm font-serif text-[rgba(160,125,55,0.55)]">
           Gestioná tus cursos registrados en el sistema
         </p>
       </div>
 
       {coursesWithStats.length > 0 && (
         <section>
-          <h2 className="mb-4 font-serif text-lg text-[#f5f0e8]">Cursos Registrados</h2>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="font-serif text-lg font-semibold text-[rgba(232,224,208,0.88)]">Cursos Registrados</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-[rgba(160,125,55,0.22)] to-transparent" />
+          </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {coursesWithStats.map(({ course, studentCount }) => (
               <CourseCard key={course.id} course={course} studentCount={studentCount} />
@@ -47,7 +55,10 @@ export default async function CoursesPage() {
       )}
 
       <section>
-        <h2 className="mb-4 font-serif text-lg text-[#f5f0e8]">Agregar Curso de Classroom</h2>
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="font-serif text-lg font-semibold text-[rgba(232,224,208,0.88)]">Agregar Curso de Classroom</h2>
+          <div className="flex-1 h-px bg-gradient-to-r from-[rgba(160,125,55,0.22)] to-transparent" />
+        </div>
         {availableToAdd.length === 0 ? (
           <p className="text-sm text-[#9aab8a]">
             {classroomCourses.length === 0

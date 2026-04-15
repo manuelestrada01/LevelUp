@@ -12,7 +12,7 @@ export default function TeacherAnimatedWrapper({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="flex flex-col gap-10"
+      className="flex flex-col gap-8"
     >
       {children}
     </motion.div>

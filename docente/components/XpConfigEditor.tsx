@@ -34,25 +34,25 @@ export default function XpConfigEditor({ courseId, initialEntries }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="overflow-hidden rounded-xl border border-[#1e3320]">
+      <div className="chronicle-stone relative overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-[#1a2e1c] text-left text-xs text-[#9aab8a]">
+          <thead className="text-left text-[11px] font-serif uppercase tracking-[0.15em]" style={{ background: "rgba(160,125,55,0.07)", borderBottom: "1px solid rgba(160,125,55,0.18)" }}>
             <tr>
-              <th className="px-4 py-3">Tipo</th>
-              <th className="px-4 py-3">Etiqueta</th>
-              <th className="px-4 py-3">XP Base</th>
-              <th className="px-4 py-3">Bonus Temprana</th>
+              <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Tipo</th>
+              <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Etiqueta</th>
+              <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">XP Base</th>
+              <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Bonus Temprana</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#1e3320] bg-[#0d1a0f]">
+          <tbody className="divide-y divide-[rgba(160,125,55,0.1)]">
             {entries.map((entry, i) => (
-              <tr key={entry.tipo}>
-                <td className="px-4 py-3 font-mono text-[#c9a227]">{entry.tipo}</td>
+              <tr key={entry.tipo} className="hover:bg-[rgba(160,125,55,0.03)] transition-colors">
+                <td className="px-4 py-3 font-mono text-sm text-[rgba(200,168,75,0.8)]">{entry.tipo}</td>
                 <td className="px-4 py-3">
                   <input
                     value={entry.label}
                     onChange={(e) => update(i, "label", e.target.value)}
-                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227] w-full"
+                    className="w-full border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.04)] px-2 py-1 text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.5)]"
                   />
                 </td>
                 <td className="px-4 py-3">
@@ -61,7 +61,7 @@ export default function XpConfigEditor({ courseId, initialEntries }: Props) {
                     min={0}
                     value={entry.xp_base}
                     onChange={(e) => update(i, "xp_base", parseInt(e.target.value) || 0)}
-                    className="w-20 rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                    className="w-20 border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.04)] px-2 py-1 text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.5)]"
                   />
                 </td>
                 <td className="px-4 py-3">
@@ -70,7 +70,7 @@ export default function XpConfigEditor({ courseId, initialEntries }: Props) {
                     min={0}
                     value={entry.xp_early}
                     onChange={(e) => update(i, "xp_early", parseInt(e.target.value) || 0)}
-                    className="w-20 rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                    className="w-20 border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.04)] px-2 py-1 text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.5)]"
                   />
                 </td>
               </tr>
@@ -82,12 +82,12 @@ export default function XpConfigEditor({ courseId, initialEntries }: Props) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-lg bg-[#c9a227] px-4 py-2 text-sm font-medium text-[#0d1a0f] disabled:opacity-50"
+          className="flex items-center gap-2 border border-[rgba(200,168,75,0.5)] bg-[rgba(200,168,75,0.12)] px-4 py-2 text-sm font-serif uppercase tracking-[0.12em] text-[rgba(200,168,75,0.9)] disabled:opacity-40 hover:bg-[rgba(200,168,75,0.2)] transition-colors"
         >
           <Save size={14} />
           {saving ? "Guardando..." : "Guardar XP"}
         </button>
-        {saved && <span className="text-xs text-[#8fbc8f]">Guardado</span>}
+        {saved && <span className="text-xs font-serif text-[rgba(143,188,143,0.8)]">Guardado</span>}
       </div>
     </div>
   );

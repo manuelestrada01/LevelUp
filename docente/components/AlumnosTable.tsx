@@ -46,22 +46,22 @@ export default function AlumnosTable({ rows, courseId, bimestre }: Props) {
         <div className="relative w-full max-w-sm">
           <Search
             size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9aab8a]"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgba(160,125,55,0.5)]"
           />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar alumno por nombre o mail…"
-            className="w-full rounded-lg border border-[#1e3320] bg-[#0d1a0f] py-2 pl-8 pr-3 text-sm text-[#f5f0e8] placeholder-[#9aab8a] outline-none focus:border-[#c9a227]/60"
+            className="w-full border border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] py-2 pl-8 pr-3 text-sm font-serif text-[rgba(232,224,208,0.85)] placeholder-[rgba(160,125,55,0.4)] outline-none focus:border-[rgba(200,168,75,0.55)]"
           />
         </div>
         <button
           onClick={() => setOnlyWithStrikes((v) => !v)}
-          className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
+          className={`flex items-center gap-1.5 border px-3 py-2 text-[11px] font-serif uppercase tracking-[0.12em] transition-colors ${
             onlyWithStrikes
-              ? "border-[#c0392b]/60 bg-[#c0392b]/20 text-[#c0392b]"
-              : "border-[#1e3320] bg-[#0d1a0f] text-[#9aab8a] hover:border-[#c0392b]/40 hover:text-[#c0392b]"
+              ? "border-[rgba(192,57,43,0.5)] bg-[rgba(192,57,43,0.12)] text-[#c0392b]"
+              : "border-[rgba(160,125,55,0.25)] bg-[rgba(160,125,55,0.04)] text-[rgba(160,125,55,0.6)] hover:border-[rgba(192,57,43,0.4)] hover:text-[#c0392b]"
           }`}
         >
           <AlertTriangle size={13} />
@@ -75,8 +75,8 @@ export default function AlumnosTable({ rows, courseId, bimestre }: Props) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#1e3320] p-12 text-center">
-          <p className="text-[#9aab8a]">
+        <div className="border border-dashed border-[rgba(160,125,55,0.2)] p-12 text-center">
+          <p className="font-serif text-[rgba(160,125,55,0.5)]">
             {onlyWithStrikes && !query
               ? "Ningún alumno tiene strikes en este bimestre."
               : query
@@ -85,48 +85,48 @@ export default function AlumnosTable({ rows, courseId, bimestre }: Props) {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[#1e3320]">
+        <div className="chronicle-stone relative overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#1a2e1c] text-left text-xs text-[#9aab8a]">
+            <thead className="text-left text-[11px] font-serif uppercase tracking-[0.15em]" style={{ background: "rgba(160,125,55,0.07)", borderBottom: "1px solid rgba(160,125,55,0.18)" }}>
               <tr>
-                <th className="px-4 py-3">Alumno</th>
-                <th className="px-4 py-3">Mail</th>
-                <th className="px-4 py-3">Nv.</th>
-                <th className="px-4 py-3">Título</th>
-                <th className="px-4 py-3">Rol</th>
-                <th className="px-4 py-3">XP</th>
-                <th className="px-4 py-3">Clase</th>
-                <th className="px-4 py-3">Strikes</th>
-                <th className="px-4 py-3">Estado</th>
-                <th className="px-4 py-3">Acciones</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Alumno</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Mail</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Nv.</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Título</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Rol</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">XP</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Clase</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Strikes</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Estado</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1e3320] bg-[#0d1a0f]">
+            <tbody className="divide-y divide-[rgba(160,125,55,0.1)]">
               {filtered.map((row) => (
-                <tr key={row.email} className="hover:bg-[#1a2e1c]">
+                <tr key={row.email} className="hover:bg-[rgba(160,125,55,0.04)] transition-colors">
                   <td className="px-4 py-3">
                     <Link
                       href={`/teacher/students/${encodeURIComponent(row.email)}`}
-                      className="font-medium text-[#f5f0e8] hover:text-[#c9a227]"
+                      className="font-serif font-medium text-[rgba(232,224,208,0.9)] hover:text-[#c9a227] transition-colors"
                     >
                       {row.displayName}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 text-xs text-[#9aab8a]">{row.email}</td>
-                  <td className="px-4 py-3 text-[#f5f0e8]">{row.level}</td>
-                  <td className="px-4 py-3 text-xs text-[#f5f0e8]">{row.levelTitle ?? "—"}</td>
-                  <td className="px-4 py-3 text-xs text-[#9aab8a]">{row.levelRole ?? "—"}</td>
-                  <td className="px-4 py-3 font-medium text-[#c9a227]">{row.xpTotal}</td>
-                  <td className="px-4 py-3 text-xs text-[#9aab8a]">{row.formativeTitle}</td>
+                  <td className="px-4 py-3 text-xs font-serif text-[rgba(160,125,55,0.55)]">{row.email}</td>
+                  <td className="px-4 py-3 font-serif text-[rgba(232,224,208,0.85)]">{row.level}</td>
+                  <td className="px-4 py-3 text-xs font-serif text-[rgba(232,224,208,0.75)]">{row.levelTitle ?? "—"}</td>
+                  <td className="px-4 py-3 text-xs font-serif text-[rgba(160,125,55,0.55)]">{row.levelRole ?? "—"}</td>
+                  <td className="px-4 py-3 font-serif font-medium text-[#c9a227]">{row.xpTotal}</td>
+                  <td className="px-4 py-3 text-xs font-serif text-[rgba(160,125,55,0.55)]">{row.formativeTitle}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       {Array.from({ length: 3 }).map((_, i) => (
                         <span
                           key={i}
-                          className={`flex h-5 w-5 items-center justify-center rounded text-xs font-bold ${
+                          className={`flex h-5 w-5 items-center justify-center text-xs font-bold ${
                             i < row.strikesActive
-                              ? "bg-[#c0392b]/20 text-[#c0392b]"
-                              : "bg-[#1e3320] text-[#1e3320]"
+                              ? "bg-[rgba(192,57,43,0.15)] text-[#c0392b]"
+                              : "bg-[rgba(232,224,208,0.05)] text-[rgba(232,224,208,0.18)]"
                           }`}
                         >
                           ✕
@@ -136,12 +136,12 @@ export default function AlumnosTable({ rows, courseId, bimestre }: Props) {
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className={`rounded px-2 py-0.5 text-xs font-medium ${
+                      className={`border px-2 py-0.5 text-[10px] font-serif uppercase tracking-widest font-medium ${
                         row.blocked
-                          ? "bg-[#c0392b]/20 text-[#c0392b]"
+                          ? "border-[rgba(192,57,43,0.4)] bg-[rgba(192,57,43,0.12)] text-[#c0392b]"
                           : row.strikesActive >= 2
-                          ? "bg-yellow-900/30 text-yellow-400"
-                          : "bg-[#1e3320] text-[#8fbc8f]"
+                          ? "border-[rgba(180,150,40,0.4)] bg-[rgba(180,150,40,0.1)] text-yellow-400"
+                          : "border-[rgba(143,188,143,0.3)] bg-[rgba(143,188,143,0.08)] text-[#8fbc8f]"
                       }`}
                     >
                       {row.blocked ? "BLOQUEADO" : row.strikesActive >= 2 ? "EN RIESGO" : "ACTIVO"}
@@ -160,7 +160,7 @@ export default function AlumnosTable({ rows, courseId, bimestre }: Props) {
                         href={`/teacher/reports/student-strikes?email=${encodeURIComponent(row.email)}&courseId=${courseId}&bimestre=${bimestre}`}
                         target="_blank"
                         title="Ver informe de strikes"
-                        className="flex items-center gap-1 rounded border border-[#1e3320] px-2 py-1 text-xs text-[#9aab8a] transition-colors hover:border-[#c9a227]/40 hover:text-[#c9a227]"
+                        className="flex items-center gap-1 border border-[rgba(160,125,55,0.25)] px-2 py-1 text-[11px] font-serif text-[rgba(160,125,55,0.55)] transition-colors hover:border-[rgba(200,168,75,0.45)] hover:text-[rgba(200,168,75,0.85)]"
                       >
                         <FileText size={12} />
                         Informe
