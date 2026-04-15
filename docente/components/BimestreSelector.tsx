@@ -27,7 +27,7 @@ export default function BimestreSelector({ currentBimestre, activeBimestre }: Pr
   const isActivo = !searchParams.has("bimestre");
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex items-center justify-center gap-2 flex-wrap md:justify-start">
       <span className="text-[11px] font-serif uppercase tracking-[0.22em] text-[rgba(160,125,55,0.55)]">Bimestre:</span>
       {BIMESTRES.map((b) => {
         const isSelected = !isActivo && currentBimestre === b;

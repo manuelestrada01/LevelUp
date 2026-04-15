@@ -25,6 +25,41 @@ interface Props {
   bimestre: string;
 }
 
+function StatusBadge({ blocked, strikesActive }: { blocked: boolean; strikesActive: number }) {
+  return (
+    <span
+      className={`border px-2 py-0.5 text-[10px] font-serif uppercase tracking-widest font-medium ${
+        blocked
+          ? "border-[rgba(192,57,43,0.4)] bg-[rgba(192,57,43,0.12)] text-[#c0392b]"
+          : strikesActive >= 2
+          ? "border-[rgba(180,150,40,0.4)] bg-[rgba(180,150,40,0.1)] text-yellow-400"
+          : "border-[rgba(143,188,143,0.3)] bg-[rgba(143,188,143,0.08)] text-[#8fbc8f]"
+      }`}
+    >
+      {blocked ? "BLOQUEADO" : strikesActive >= 2 ? "EN RIESGO" : "ACTIVO"}
+    </span>
+  );
+}
+
+function StrikeIcons({ count }: { count: number }) {
+  return (
+    <div className="flex gap-1">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <span
+          key={i}
+          className={`flex h-5 w-5 items-center justify-center text-xs font-bold ${
+            i < count
+              ? "bg-[rgba(192,57,43,0.15)] text-[#c0392b]"
+              : "bg-[rgba(232,224,208,0.05)] text-[rgba(232,224,208,0.18)]"
+          }`}
+        >
+          ✕
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default function AlumnosTable({ rows, courseId, bimestre }: Props) {
   const [query, setQuery] = useState("");
   const [onlyWithStrikes, setOnlyWithStrikes] = useState(false);
@@ -42,6 +77,7 @@ export default function AlumnosTable({ rows, courseId, bimestre }: Props) {
 
   return (
     <div className="flex flex-col gap-3">
+      {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative min-w-0 flex-1">
           <Search
@@ -85,93 +121,149 @@ export default function AlumnosTable({ rows, courseId, bimestre }: Props) {
           </p>
         </div>
       ) : (
-        <div className="chronicle-stone relative overflow-x-auto">
-          <table className="min-w-[700px] w-full text-sm">
-            <thead className="text-left text-[11px] font-serif uppercase tracking-[0.15em]" style={{ background: "rgba(160,125,55,0.07)", borderBottom: "1px solid rgba(160,125,55,0.18)" }}>
-              <tr>
-                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Alumno</th>
-                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Mail</th>
-                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Nv.</th>
-                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Título</th>
-                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Rol</th>
-                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">XP</th>
-                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Clase</th>
-                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Strikes</th>
-                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Estado</th>
-                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[rgba(160,125,55,0.1)]">
-              {filtered.map((row) => (
-                <tr key={row.email} className="hover:bg-[rgba(160,125,55,0.04)] transition-colors">
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/teacher/students/${encodeURIComponent(row.email)}`}
-                      className="font-serif font-medium text-[rgba(232,224,208,0.9)] hover:text-[#c9a227] transition-colors"
-                    >
-                      {row.displayName}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-xs font-serif text-[rgba(160,125,55,0.55)]">{row.email}</td>
-                  <td className="px-4 py-3 font-serif text-[rgba(232,224,208,0.85)]">{row.level}</td>
-                  <td className="px-4 py-3 text-xs font-serif text-[rgba(232,224,208,0.75)]">{row.levelTitle ?? "—"}</td>
-                  <td className="px-4 py-3 text-xs font-serif text-[rgba(160,125,55,0.55)]">{row.levelRole ?? "—"}</td>
-                  <td className="px-4 py-3 font-serif font-medium text-[#c9a227]">{row.xpTotal}</td>
-                  <td className="px-4 py-3 text-xs font-serif text-[rgba(160,125,55,0.55)]">{row.formativeTitle}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1">
-                      {Array.from({ length: 3 }).map((_, i) => (
-                        <span
-                          key={i}
-                          className={`flex h-5 w-5 items-center justify-center text-xs font-bold ${
-                            i < row.strikesActive
-                              ? "bg-[rgba(192,57,43,0.15)] text-[#c0392b]"
-                              : "bg-[rgba(232,224,208,0.05)] text-[rgba(232,224,208,0.18)]"
-                          }`}
-                        >
-                          ✕
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`border px-2 py-0.5 text-[10px] font-serif uppercase tracking-widest font-medium ${
-                        row.blocked
-                          ? "border-[rgba(192,57,43,0.4)] bg-[rgba(192,57,43,0.12)] text-[#c0392b]"
-                          : row.strikesActive >= 2
-                          ? "border-[rgba(180,150,40,0.4)] bg-[rgba(180,150,40,0.1)] text-yellow-400"
-                          : "border-[rgba(143,188,143,0.3)] bg-[rgba(143,188,143,0.08)] text-[#8fbc8f]"
-                      }`}
-                    >
-                      {row.blocked ? "BLOQUEADO" : row.strikesActive >= 2 ? "EN RIESGO" : "ACTIVO"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <StrikeManager
-                        courseId={courseId}
-                        studentEmail={row.email}
-                        bimestre={bimestre}
-                        activeStrikes={row.activeStrikes}
-                        blocked={row.blocked}
-                      />
-                      <Link
-                        href={`/teacher/reports/student-strikes?email=${encodeURIComponent(row.email)}&courseId=${courseId}&bimestre=${bimestre}`}
-                        target="_blank"
-                        title="Ver informe de strikes"
-                        className="flex items-center gap-1 border border-[rgba(160,125,55,0.25)] px-2 py-1 text-[11px] font-serif text-[rgba(160,125,55,0.55)] transition-colors hover:border-[rgba(200,168,75,0.45)] hover:text-[rgba(200,168,75,0.85)]"
-                      >
-                        <FileText size={12} />
-                        Informe
-                      </Link>
-                    </div>
-                  </td>
+        <>
+          {/* Desktop table */}
+          <div className="hidden md:block chronicle-stone relative overflow-x-auto">
+            <table className="min-w-[700px] w-full text-sm">
+              <thead
+                className="text-left text-[11px] font-serif uppercase tracking-[0.15em]"
+                style={{ background: "rgba(160,125,55,0.07)", borderBottom: "1px solid rgba(160,125,55,0.18)" }}
+              >
+                <tr>
+                  <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Alumno</th>
+                  <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Mail</th>
+                  <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Nv.</th>
+                  <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Título</th>
+                  <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Rol</th>
+                  <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">XP</th>
+                  <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Clase</th>
+                  <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Strikes</th>
+                  <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Estado</th>
+                  <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-[rgba(160,125,55,0.1)]">
+                {filtered.map((row) => (
+                  <tr key={row.email} className="hover:bg-[rgba(160,125,55,0.04)] transition-colors">
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/teacher/students/${encodeURIComponent(row.email)}`}
+                        className="font-serif font-medium text-[rgba(232,224,208,0.9)] hover:text-[#c9a227] transition-colors"
+                      >
+                        {row.displayName}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3 text-xs font-serif text-[rgba(160,125,55,0.55)]">{row.email}</td>
+                    <td className="px-4 py-3 font-serif text-[rgba(232,224,208,0.85)]">{row.level}</td>
+                    <td className="px-4 py-3 text-xs font-serif text-[rgba(232,224,208,0.75)]">{row.levelTitle ?? "—"}</td>
+                    <td className="px-4 py-3 text-xs font-serif text-[rgba(160,125,55,0.55)]">{row.levelRole ?? "—"}</td>
+                    <td className="px-4 py-3 font-serif font-medium text-[#c9a227]">{row.xpTotal}</td>
+                    <td className="px-4 py-3 text-xs font-serif text-[rgba(160,125,55,0.55)]">{row.formativeTitle}</td>
+                    <td className="px-4 py-3">
+                      <StrikeIcons count={row.strikesActive} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <StatusBadge blocked={row.blocked} strikesActive={row.strikesActive} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <StrikeManager
+                          courseId={courseId}
+                          studentEmail={row.email}
+                          bimestre={bimestre}
+                          activeStrikes={row.activeStrikes}
+                          blocked={row.blocked}
+                        />
+                        <Link
+                          href={`/teacher/reports/student-strikes?email=${encodeURIComponent(row.email)}&courseId=${courseId}&bimestre=${bimestre}`}
+                          target="_blank"
+                          title="Ver informe de strikes"
+                          className="flex items-center gap-1 border border-[rgba(160,125,55,0.25)] px-2 py-1 text-[11px] font-serif text-[rgba(160,125,55,0.55)] transition-colors hover:border-[rgba(200,168,75,0.45)] hover:text-[rgba(200,168,75,0.85)]"
+                        >
+                          <FileText size={12} />
+                          Informe
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="flex flex-col gap-2 md:hidden">
+            {filtered.map((row) => (
+              <div
+                key={row.email}
+                className="chronicle-stone flex flex-col items-center p-4 text-center"
+              >
+                {/* Status badge */}
+                <StatusBadge blocked={row.blocked} strikesActive={row.strikesActive} />
+
+                {/* Name */}
+                <Link
+                  href={`/teacher/students/${encodeURIComponent(row.email)}`}
+                  className="mt-2 w-full truncate font-serif font-medium text-[rgba(232,224,208,0.9)] hover:text-[#c9a227] transition-colors leading-snug"
+                >
+                  {row.displayName}
+                </Link>
+
+                {/* Email */}
+                <p className="mt-0.5 w-full truncate text-[11px] font-serif text-[rgba(160,125,55,0.5)]">
+                  {row.email}
+                </p>
+
+                {/* Stats row */}
+                <div
+                  className="mt-3 flex w-full flex-wrap justify-center items-center gap-x-4 gap-y-1"
+                  style={{ borderTop: "1px solid rgba(160,125,55,0.12)", paddingTop: "10px" }}
+                >
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-[10px] font-serif uppercase tracking-wider text-[rgba(160,125,55,0.5)]">Nv.</span>
+                    <span className="font-serif text-sm text-[rgba(232,224,208,0.85)]">{row.level}</span>
+                    {row.levelTitle && (
+                      <span className="text-[11px] font-serif text-[rgba(160,125,55,0.6)]">{row.levelTitle}</span>
+                    )}
+                  </div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-[10px] font-serif uppercase tracking-wider text-[rgba(160,125,55,0.5)]">XP</span>
+                    <span className="font-serif font-medium text-[#c9a227]">{row.xpTotal}</span>
+                  </div>
+                  {row.formativeTitle && (
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-[10px] font-serif uppercase tracking-wider text-[rgba(160,125,55,0.5)]">Clase</span>
+                      <span className="text-[11px] font-serif text-[rgba(160,125,55,0.6)]">{row.formativeTitle}</span>
+                    </div>
+                  )}
+                  <StrikeIcons count={row.strikesActive} />
+                </div>
+
+                {/* Actions */}
+                <div
+                  className="mt-3 flex w-full justify-center items-center gap-2"
+                  style={{ borderTop: "1px solid rgba(160,125,55,0.12)", paddingTop: "10px" }}
+                >
+                  <StrikeManager
+                    courseId={courseId}
+                    studentEmail={row.email}
+                    bimestre={bimestre}
+                    activeStrikes={row.activeStrikes}
+                    blocked={row.blocked}
+                  />
+                  <Link
+                    href={`/teacher/reports/student-strikes?email=${encodeURIComponent(row.email)}&courseId=${courseId}&bimestre=${bimestre}`}
+                    target="_blank"
+                    className="flex items-center gap-1 border border-[rgba(160,125,55,0.25)] px-2 py-1 text-[11px] font-serif text-[rgba(160,125,55,0.55)] transition-colors hover:border-[rgba(200,168,75,0.45)] hover:text-[rgba(200,168,75,0.85)]"
+                  >
+                    <FileText size={12} />
+                    Informe
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

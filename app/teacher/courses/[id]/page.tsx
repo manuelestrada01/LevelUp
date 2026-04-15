@@ -73,7 +73,7 @@ export default async function CourseDetailPage({
         <div className="h-px flex-1 bg-gradient-to-r from-[rgba(160,125,55,0.15)] to-transparent" />
       </div>
 
-      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+      <div className="flex flex-col items-center gap-3 text-center md:flex-row md:items-start md:justify-between md:text-left">
         <div>
           <h1 className="font-serif text-xl md:text-2xl font-semibold text-[rgba(232,224,208,0.92)]">{course.name}</h1>
           {course.section && (
@@ -82,7 +82,7 @@ export default async function CourseDetailPage({
             </p>
           )}
         </div>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center justify-center gap-3 shrink-0 md:justify-start">
           <SyncStatus courseId={id} />
           <Link
             href={`/teacher/courses/${id}/setup`}

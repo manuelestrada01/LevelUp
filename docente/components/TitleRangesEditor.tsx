@@ -68,25 +68,28 @@ export default function TitleRangesEditor({ courseId, initialRanges }: Props) {
       {ranges.length > 0 ? (
         <div className="chronicle-stone relative overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="text-left text-xs font-serif">
+            <thead
+              className="text-left text-[11px] font-serif uppercase tracking-[0.15em]"
+              style={{ background: "rgba(160,125,55,0.07)", borderBottom: "1px solid rgba(160,125,55,0.18)" }}
+            >
               <tr>
-                <th className="px-4 py-3">Título</th>
-                <th className="px-4 py-3">Rol</th>
-                <th className="px-4 py-3">Nv. Mín</th>
-                <th className="px-4 py-3">Nv. Máx</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Título</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Rol</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Nv. Mín</th>
+                <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Nv. Máx</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1e3320] bg-[#0d1a0f]">
+            <tbody className="divide-y divide-[rgba(160,125,55,0.1)]">
               {ranges.map((r, i) => (
-                <tr key={i}>
+                <tr key={i} className="transition-colors hover:bg-[rgba(160,125,55,0.03)]">
                   <td className="px-4 py-2">
                     <input
                       type="text"
                       value={r.title}
                       onChange={(e) => update(i, "title", e.target.value)}
                       placeholder="ej. Iniciación"
-                      className="w-full rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                      className="w-full border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.04)] px-2 py-1 text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.5)]"
                     />
                   </td>
                   <td className="px-4 py-2">
@@ -95,7 +98,7 @@ export default function TitleRangesEditor({ courseId, initialRanges }: Props) {
                       value={r.role}
                       onChange={(e) => update(i, "role", e.target.value)}
                       placeholder="ej. Aprendiz"
-                      className="w-full rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                      className="w-full border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.04)] px-2 py-1 text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.5)]"
                     />
                   </td>
                   <td className="px-4 py-2">
@@ -105,7 +108,7 @@ export default function TitleRangesEditor({ courseId, initialRanges }: Props) {
                       max={36}
                       value={r.level_min}
                       onChange={(e) => update(i, "level_min", Number(e.target.value))}
-                      className="w-16 rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                      className="w-16 border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.04)] px-2 py-1 text-center text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.5)]"
                     />
                   </td>
                   <td className="px-4 py-2">
@@ -115,13 +118,13 @@ export default function TitleRangesEditor({ courseId, initialRanges }: Props) {
                       max={36}
                       value={r.level_max}
                       onChange={(e) => update(i, "level_max", Number(e.target.value))}
-                      className="w-16 rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                      className="w-16 border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.04)] px-2 py-1 text-center text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.5)]"
                     />
                   </td>
                   <td className="px-4 py-2">
                     <button
                       onClick={() => removeRow(i)}
-                      className="text-[#9aab8a] hover:text-[#c0392b] transition-colors"
+                      className="text-[rgba(160,125,55,0.45)] transition-colors hover:text-[#c0392b]"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -132,7 +135,7 @@ export default function TitleRangesEditor({ courseId, initialRanges }: Props) {
           </table>
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-[#1e3320] p-6 text-center text-xs text-[#9aab8a]">
+        <div className="border border-dashed border-[rgba(160,125,55,0.25)] p-6 text-center text-xs font-serif text-[rgba(160,125,55,0.55)]">
           Sin rangos definidos. Agregá uno para configurar los títulos y roles por nivel.
         </div>
       )}
@@ -140,20 +143,20 @@ export default function TitleRangesEditor({ courseId, initialRanges }: Props) {
       <div className="flex items-center gap-3">
         <button
           onClick={addRow}
-          className="flex items-center gap-2 rounded-lg border border-[#1e3320] px-4 py-2 text-sm text-[#9aab8a] transition-colors hover:border-[#c9a227]/40 hover:text-[#c9a227]"
+          className="flex items-center gap-2 border border-[rgba(200,168,75,0.3)] px-4 py-2 text-[11px] font-serif uppercase tracking-[0.18em] text-[rgba(200,168,75,0.75)] transition-colors hover:bg-[rgba(200,168,75,0.08)]"
         >
-          <Plus size={14} />
+          <Plus size={13} />
           Agregar rango
         </button>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-lg bg-[#c9a227] px-4 py-2 text-sm font-medium text-[#0d1a0f] disabled:opacity-50"
+          className="flex items-center gap-2 border border-[rgba(200,168,75,0.5)] bg-[rgba(200,168,75,0.12)] px-4 py-2 text-[11px] font-serif uppercase tracking-[0.12em] text-[rgba(200,168,75,0.9)] transition-colors hover:bg-[rgba(200,168,75,0.2)] disabled:opacity-40"
         >
-          <Save size={14} />
+          <Save size={13} />
           {saving ? "Guardando..." : "Guardar"}
         </button>
-        {saved && <span className="text-xs text-[#8fbc8f]">Guardado</span>}
+        {saved && <span className="text-xs font-serif text-[rgba(143,188,143,0.8)]">Guardado</span>}
         {error && <span className="text-xs text-[#c0392b]">{error}</span>}
       </div>
     </div>

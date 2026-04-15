@@ -65,7 +65,7 @@ export default function XpProgressionCalculator({ xpConfig, bimestreConfig, titl
 
   if (totalXp === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-[#1e3320] p-6 text-center text-xs text-[#9aab8a]">
+      <div className="border border-dashed border-[rgba(160,125,55,0.25)] p-6 text-center text-xs font-serif text-[rgba(160,125,55,0.55)]">
         Configurá las fechas de bimestre y la cantidad de tareas por tipo para ver la proyección de XP.
       </div>
     );
@@ -73,7 +73,6 @@ export default function XpProgressionCalculator({ xpConfig, bimestreConfig, titl
 
   const thresholds = calcThresholds(titleRanges, totalXp);
 
-  // Group thresholds by title range for display
   const groupedByTitle = thresholds.reduce<
     Record<string, { title: string; role: string; levels: LevelThreshold[] }>
   >((acc, t) => {
@@ -86,25 +85,29 @@ export default function XpProgressionCalculator({ xpConfig, bimestreConfig, titl
   return (
     <div className="flex flex-col gap-5">
       {/* XP por bimestre */}
-      <div className="rounded-xl border border-[#1e3320] bg-[#1a2e1c] p-5">
-        <h4 className="mb-3 font-serif text-sm text-[#f5f0e8]">XP disponible por bimestre</h4>
+      <div className="chronicle-stone p-5">
+        <h4 className="mb-3 font-serif text-sm uppercase tracking-[0.1em] text-[rgba(200,168,75,0.8)]">
+          XP disponible por bimestre
+        </h4>
         <div className="flex flex-col gap-2">
           {bimestreXp.map(({ bimestre, xp, counts }) => {
             const nonZero = Object.entries(counts).filter(([, qty]) => qty > 0);
             const pct = Math.round((xp / totalXp) * 100);
             return (
               <div key={bimestre} className="flex items-start gap-3">
-                <span className="w-8 shrink-0 text-xs font-medium text-[#c9a227]">{bimestre}</span>
+                <span className="w-8 shrink-0 font-mono text-xs font-medium text-[rgba(200,168,75,0.85)]">
+                  {bimestre}
+                </span>
                 <div className="flex flex-1 flex-col gap-0.5">
                   <div className="flex items-center gap-2">
                     <div
-                      className="h-2 rounded-full bg-[#c9a227]/60"
+                      className="h-1.5 bg-[rgba(200,168,75,0.45)]"
                       style={{ width: `${pct}%`, minWidth: xp > 0 ? "4px" : "0" }}
                     />
-                    <span className="font-mono text-xs text-[#f5f0e8]">{xp} XP</span>
+                    <span className="font-mono text-xs text-[rgba(232,224,208,0.8)]">{xp} XP</span>
                   </div>
                   {nonZero.length > 0 && (
-                    <p className="text-[10px] text-[#9aab8a]">
+                    <p className="text-[10px] text-[rgba(160,125,55,0.6)]">
                       {nonZero.map(([tipo, qty]) => `${qty}×${tipo}`).join(" + ")}
                     </p>
                   )}
@@ -112,24 +115,27 @@ export default function XpProgressionCalculator({ xpConfig, bimestreConfig, titl
               </div>
             );
           })}
-          <div className="flex items-center justify-between border-t border-[#1e3320] pt-2">
-            <span className="text-xs text-[#9aab8a]">XP total del año</span>
-            <span className="font-mono text-base font-bold text-[#c9a227]">{totalXp} XP</span>
+          <div
+            className="flex items-center justify-between pt-3"
+            style={{ borderTop: "1px solid rgba(160,125,55,0.18)" }}
+          >
+            <span className="text-xs font-serif text-[rgba(160,125,55,0.6)]">XP total del año</span>
+            <span className="font-mono text-base font-bold text-[rgba(200,168,75,0.9)]">{totalXp} XP</span>
           </div>
         </div>
       </div>
 
       {/* Distribución automática por título/rol */}
       {thresholds.length > 0 ? (
-        <div className="rounded-xl border border-[#1e3320] bg-[#1a2e1c] p-5">
-          <h4 className="mb-3 font-serif text-sm text-[#f5f0e8]">
+        <div className="chronicle-stone p-5">
+          <h4 className="mb-1 font-serif text-sm uppercase tracking-[0.1em] text-[rgba(200,168,75,0.8)]">
             Distribución automática de XP por nivel
           </h4>
-          <p className="mb-4 text-xs text-[#9aab8a]">
+          <p className="mb-4 text-xs text-[rgba(160,125,55,0.6)]">
             XP distribuida equitativamente ({Math.round(totalXp / (thresholds.length || 1))} XP/nivel)
           </p>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             {Object.values(groupedByTitle).map(({ title, role, levels }) => {
               const xpStart = levels[0].xpStart;
               const xpEnd = levels[levels.length - 1].xpEnd;
@@ -139,23 +145,22 @@ export default function XpProgressionCalculator({ xpConfig, bimestreConfig, titl
               return (
                 <div
                   key={`${title}-${role}`}
-                  className="rounded-lg border border-[#1e3320] bg-[#0d1a0f] p-3"
+                  className="flex items-center justify-between border border-[rgba(160,125,55,0.15)] bg-[rgba(160,125,55,0.04)] px-4 py-3"
                 >
-                  <div className="mb-2 flex items-center justify-between">
-                    <div>
-                      <span className="text-sm font-medium text-[#f5f0e8]">{title}</span>
-                      <span className="ml-2 text-xs text-[#9aab8a]">— {role}</span>
-                    </div>
-                    <span className="text-xs text-[#9aab8a]">
-                      Nv. {levelMin}
-                      {levelMin !== levelMax ? `–${levelMax}` : ""}
-                    </span>
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-serif text-sm text-[rgba(232,224,208,0.85)]">{title}</span>
+                    <span className="text-xs text-[rgba(160,125,55,0.6)]">— {role}</span>
                   </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#9aab8a]">
+                  <div className="flex items-center gap-4 text-xs">
+                    <span className="text-[rgba(160,125,55,0.6)]">
+                      Nv. {levelMin}{levelMin !== levelMax ? `–${levelMax}` : ""}
+                    </span>
+                    <span className="font-mono text-[rgba(200,168,75,0.75)]">
                       {xpStart} → {xpEnd} XP
                     </span>
-                    <span className="text-[#c9a227]">{levels.length} nivel{levels.length !== 1 ? "es" : ""}</span>
+                    <span className="text-[rgba(143,188,143,0.7)]">
+                      {levels.length} nivel{levels.length !== 1 ? "es" : ""}
+                    </span>
                   </div>
                 </div>
               );
@@ -164,8 +169,8 @@ export default function XpProgressionCalculator({ xpConfig, bimestreConfig, titl
         </div>
       ) : (
         titleRanges.length === 0 && (
-          <p className="text-xs text-[#9aab8a]">
-            Definí rangos en "Configuración de Niveles, Títulos y Roles" para ver la distribución automática.
+          <p className="text-xs font-serif text-[rgba(160,125,55,0.55)]">
+            Definí rangos en &quot;Configuración de Niveles, Títulos y Roles&quot; para ver la distribución automática.
           </p>
         )
       )}

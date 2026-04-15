@@ -55,31 +55,36 @@ export default function BimestreConfigEditor({ courseId, initialEntries, xpConfi
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="overflow-x-auto rounded-xl border border-[#1e3320]">
+      <div className="chronicle-stone relative overflow-x-auto overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="text-left text-xs font-serif">
+          <thead
+            className="text-left text-[11px] font-serif uppercase tracking-[0.15em]"
+            style={{ background: "rgba(160,125,55,0.07)", borderBottom: "1px solid rgba(160,125,55,0.18)" }}
+          >
             <tr>
-              <th className="px-4 py-3">Bimestre</th>
-              <th className="px-4 py-3">Inicio</th>
-              <th className="px-4 py-3">Fin</th>
+              <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Bimestre</th>
+              <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Inicio</th>
+              <th className="px-4 py-3 text-[rgba(160,125,55,0.65)]">Fin</th>
               {xpConfig.map((x) => (
-                <th key={x.tipo} className="px-4 py-3">
+                <th key={x.tipo} className="px-4 py-3 text-[rgba(160,125,55,0.65)]">
                   {x.label || x.tipo}
-                  <span className="ml-1 text-[#9aab8a]/50">(cant.)</span>
+                  <span className="ml-1 text-[rgba(160,125,55,0.4)]">(cant.)</span>
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#1e3320] bg-[#0d1a0f]">
+          <tbody className="divide-y divide-[rgba(160,125,55,0.1)]">
             {entries.map((entry, i) => (
-              <tr key={entry.bimestre}>
-                <td className="px-4 py-3 font-medium text-[#c9a227]">{entry.bimestre}</td>
+              <tr key={entry.bimestre} className="transition-colors hover:bg-[rgba(160,125,55,0.03)]">
+                <td className="px-4 py-3 font-mono text-sm font-medium text-[rgba(200,168,75,0.85)]">
+                  {entry.bimestre}
+                </td>
                 <td className="px-4 py-3">
                   <input
                     type="date"
                     value={entry.start_date}
                     onChange={(e) => updateDate(i, "start_date", e.target.value)}
-                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                    className="border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.04)] px-2 py-1 text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.5)]"
                   />
                 </td>
                 <td className="px-4 py-3">
@@ -87,7 +92,7 @@ export default function BimestreConfigEditor({ courseId, initialEntries, xpConfi
                     type="date"
                     value={entry.end_date}
                     onChange={(e) => updateDate(i, "end_date", e.target.value)}
-                    className="rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                    className="border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.04)] px-2 py-1 text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.5)]"
                   />
                 </td>
                 {xpConfig.map((x) => (
@@ -98,7 +103,7 @@ export default function BimestreConfigEditor({ courseId, initialEntries, xpConfi
                       value={entry.task_counts?.[x.tipo] ?? ""}
                       onChange={(e) => updateTaskCount(i, x.tipo, e.target.value)}
                       placeholder="0"
-                      className="w-16 rounded border border-[#1e3320] bg-[#1a2e1c] px-2 py-1 text-center text-xs text-[#f5f0e8] outline-none focus:border-[#c9a227]"
+                      className="w-16 border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.04)] px-2 py-1 text-center text-xs font-serif text-[rgba(232,224,208,0.85)] outline-none focus:border-[rgba(200,168,75,0.5)]"
                     />
                   </td>
                 ))}
@@ -112,12 +117,12 @@ export default function BimestreConfigEditor({ courseId, initialEntries, xpConfi
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-lg bg-[#c9a227] px-4 py-2 text-sm font-medium text-[#0d1a0f] disabled:opacity-50"
+          className="flex items-center gap-2 border border-[rgba(200,168,75,0.5)] bg-[rgba(200,168,75,0.12)] px-4 py-2 text-[11px] font-serif uppercase tracking-[0.12em] text-[rgba(200,168,75,0.9)] transition-colors hover:bg-[rgba(200,168,75,0.2)] disabled:opacity-40"
         >
-          <Save size={14} />
+          <Save size={13} />
           {saving ? "Guardando..." : "Guardar Bimestres"}
         </button>
-        {saved && <span className="text-xs text-[#8fbc8f]">Guardado</span>}
+        {saved && <span className="text-xs font-serif text-[rgba(143,188,143,0.8)]">Guardado</span>}
       </div>
     </div>
   );
