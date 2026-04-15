@@ -46,21 +46,23 @@ function MisionCard({ m, dataAttr }: { m: Mision; dataAttr?: string }) {
       <div className="pointer-events-none absolute inset-[5px] border border-[rgba(160,125,55,0.07)]" />
 
       {/* Top row */}
-      <div className="relative flex items-center gap-2 flex-wrap">
-        <span className="text-[11px] font-serif uppercase tracking-[0.2em] text-[rgba(160,125,55,0.6)] border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.06)] px-2 py-0.5">
-          {m.tipo}
-        </span>
-        {(dl.urgent || dl.overdue) && (
-          <span className={`flex items-center gap-1 text-[11px] font-serif uppercase tracking-wider px-1.5 py-0.5 ${
-            dl.overdue
-              ? "text-danger border border-danger/35 bg-danger/[0.07]"
-              : "text-[rgba(212,140,23,0.85)] border border-[rgba(212,140,23,0.3)] bg-[rgba(212,140,23,0.07)]"
-          }`}>
-            <AlertCircle size={10} strokeWidth={2.5} />
-            {dl.overdue ? "Atrasada" : "Urgente"}
+      <div className="relative flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-[11px] font-serif uppercase tracking-[0.2em] text-[rgba(160,125,55,0.6)] border border-[rgba(160,125,55,0.22)] bg-[rgba(160,125,55,0.06)] px-2 py-0.5">
+            {m.tipo}
           </span>
-        )}
-        <span className="ml-auto font-serif text-[17px] font-bold text-[#c8a84b]">
+          {(dl.urgent || dl.overdue) && (
+            <span className={`flex items-center gap-1 text-[11px] font-serif uppercase tracking-wider px-1.5 py-0.5 ${
+              dl.overdue
+                ? "text-danger border border-danger/35 bg-danger/[0.07]"
+                : "text-[rgba(212,140,23,0.85)] border border-[rgba(212,140,23,0.3)] bg-[rgba(212,140,23,0.07)]"
+            }`}>
+              <AlertCircle size={10} strokeWidth={2.5} />
+              {dl.overdue ? "Atrasada" : "Urgente"}
+            </span>
+          )}
+        </div>
+        <span className="shrink-0 font-serif text-[17px] font-bold text-[#c8a84b]">
           +{m.xpReward.toLocaleString("es-AR")} XP
         </span>
       </div>

@@ -47,7 +47,7 @@ export default async function DashboardLayout({
             level={DEMO_LEVEL}
             formativeClassTitle={DEMO_CLASS.title}
           />
-          <main className="flex-1 overflow-y-auto flex flex-col pb-16 md:pb-0">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col pb-16 md:pb-0">
             <div className="flex-1">{children}</div>
             <Footer />
           </main>
@@ -117,7 +117,7 @@ export default async function DashboardLayout({
             level={level}
             formativeClassTitle={formativeClassTitle}
           />
-          <main className="flex-1 overflow-y-auto flex flex-col pb-16 md:pb-0">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col pb-16 md:pb-0">
             <div className="flex-1">
               {children}
             </div>
