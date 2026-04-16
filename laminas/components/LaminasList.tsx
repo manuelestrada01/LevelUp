@@ -1,11 +1,17 @@
+"use client";
+
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { Lamina, LaminaStatus } from "@/laminas/types";
+
+gsap.registerPlugin(useGSAP);
 
 interface LaminasListProps {
   laminas: Lamina[];
   activeBimestre: string;
 }
 
-// Stone noise
 const STONE_NOISE =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E\")";
 
@@ -46,9 +52,11 @@ function BimestreTable({ laminas }: { laminas: Lamina[] }) {
           return (
             <div
               key={lamina.id}
+              data-row
               className={`transition-colors hover:bg-[rgba(200,168,75,0.02)] ${
                 i !== laminas.length - 1 ? "border-b border-[rgba(160,125,55,0.1)]" : ""
               } ${isPending ? "opacity-45" : ""}`}
+              style={{ opacity: 0 }}
             >
               {/* Desktop row */}
               <div className="hidden md:grid grid-cols-[72px_1fr_110px_110px_110px_72px] gap-4 items-center px-5 py-3.5">
@@ -112,6 +120,8 @@ function BimestreTable({ laminas }: { laminas: Lamina[] }) {
 }
 
 export default function LaminasList({ laminas, activeBimestre }: LaminasListProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const active = laminas.filter((l) => l.bimestre === activeBimestre);
   const previous = laminas.filter((l) => l.bimestre !== activeBimestre);
   const previousBimestres = [...new Set(previous.map((l) => l.bimestre))].sort();
@@ -120,8 +130,24 @@ export default function LaminasList({ laminas, activeBimestre }: LaminasListProp
   const strikesGenerados = laminas.filter((l) => l.strikeAdded).length;
   const pendientes = laminas.filter((l) => l.status === "no_entregada").length;
 
+  useGSAP(
+    () => {
+      gsap.fromTo(
+        "[data-seal]",
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, stagger: 0.08, duration: 0.38, ease: "power3.out", delay: 0.1 }
+      );
+      gsap.fromTo(
+        "[data-row]",
+        { opacity: 0, x: -8 },
+        { opacity: 1, x: 0, stagger: 0.05, duration: 0.32, ease: "power2.out", delay: 0.25 }
+      );
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <div className="flex flex-col gap-8">
+    <div ref={containerRef} className="flex flex-col gap-8">
 
       {/* ── Summary seals ── */}
       <div className="grid grid-cols-3 gap-4">
@@ -132,8 +158,10 @@ export default function LaminasList({ laminas, activeBimestre }: LaminasListProp
         ].map(({ label, value, color }) => (
           <div
             key={label}
+            data-seal
             className="relative p-4 overflow-hidden flex flex-col items-center justify-center"
             style={{
+              opacity: 0,
               background: `${STONE_NOISE}, linear-gradient(170deg, #141209 0%, #0e0d07 100%)`,
               border: "1px solid rgba(160,125,55,0.28)",
             }}
