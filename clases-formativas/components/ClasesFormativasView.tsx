@@ -70,7 +70,7 @@ export default function ClasesFormativasView({
         gsap.set(overlayRef.current, { display: "flex" });
         const tl = gsap.timeline();
         tl.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.22, ease: "none" });
-        tl.fromTo(popupRef.current, { opacity: 0, scale: 0.84, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.52, ease: "back.out(1.5)" }, "-=0.1");
+        tl.fromTo(popupRef.current, { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" }, "-=0.1");
         tl.fromTo("[data-corner]", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, stagger: 0.05, duration: 0.25, ease: "back.out(3)" }, "-=0.4");
         tl.fromTo("[data-el]", { opacity: 0, y: 14 }, { opacity: 1, y: 0, stagger: 0.07, duration: 0.32, ease: "power3.out" }, "-=0.3");
       } else if (openClass) {
@@ -81,7 +81,7 @@ export default function ClasesFormativasView({
             gsap.set(overlayRef.current!, { display: "none" });
           },
         });
-        tl.to(popupRef.current, { opacity: 0, scale: 0.9, y: 20, duration: 0.2, ease: "power2.in" });
+        tl.to(popupRef.current, { opacity: 0, y: 16, duration: 0.18, ease: "power2.in" });
         tl.to(overlayRef.current, { opacity: 0, duration: 0.18, ease: "none" }, "-=0.1");
       }
     },
@@ -188,14 +188,15 @@ export default function ClasesFormativasView({
       {/* ── Flip-card modal overlay ── */}
       <div
         ref={overlayRef}
-        style={{ display: "none" }}
-        className="fixed inset-0 z-50 items-center justify-center bg-black/82 p-4"
+        style={{ display: "none", backgroundColor: "rgba(0,0,0,0.82)" }}
+        className="fixed inset-0 z-50 items-center justify-center p-4"
         onClick={handleClose}
       >
         <div
           ref={popupRef}
           onClick={(e) => e.stopPropagation()}
           className="relative w-full max-w-sm"
+          style={{ willChange: "transform, opacity" }}
         >
           {/* Iron bracket corners */}
           <div data-corner className="pointer-events-none absolute -top-2.5 -left-2.5 h-8 w-8 border-t-2 border-l-2 border-[rgba(160,125,55,0.55)]" />
@@ -434,11 +435,11 @@ function ClassCardFront({ cls, isActive, onFlip }: {
 
   return (
     <div
-      className="relative flex h-full flex-col overflow-hidden p-6"
+      className="relative flex h-full flex-col p-6"
       style={{
         background: `${STONE_NOISE}, linear-gradient(170deg, #131110 0%, #0d0c0b 100%)`,
         border: "1px solid rgba(160,125,55,0.42)",
-        boxShadow: "0 8px 50px rgba(0,0,0,0.9)",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.9)",
       }}
     >
       <div className="pointer-events-none absolute inset-[5px] border border-[rgba(160,125,55,0.1)]" />
@@ -512,11 +513,11 @@ function ClassCardBack({ cls, onFlip }: {
 
   return (
     <div
-      className="relative flex h-full flex-col items-center justify-center overflow-hidden p-6 text-center"
+      className="relative flex h-full flex-col items-center justify-center p-6 text-center"
       style={{
         background: `${STONE_NOISE}, linear-gradient(170deg, #111814 0%, #0a100d 100%)`,
         border: "1px solid rgba(0,155,125,0.3)",
-        boxShadow: "0 8px 50px rgba(0,0,0,0.9)",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.9)",
       }}
     >
       <div className="pointer-events-none absolute inset-[5px] border border-[rgba(0,155,125,0.08)]" />
