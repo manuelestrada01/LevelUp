@@ -57,14 +57,9 @@ const EVENT_ICON_BG: Record<ActivityEntry["type"], string> = {
 
 export default function ActivityFeed({ entries }: ActivityFeedProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const spineRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     gsap.timeline()
-      .fromTo(spineRef.current,
-        { scaleY: 0, transformOrigin: "top" },
-        { scaleY: 1, duration: 0.55, ease: "power2.inOut" }
-      )
       .fromTo(
         containerRef.current?.querySelectorAll("[data-entry]") ?? [],
         { opacity: 0, x: -14 },
@@ -116,9 +111,6 @@ export default function ActivityFeed({ entries }: ActivityFeedProps) {
         </div>
       ) : (
         <div className="relative flex flex-col gap-0" style={{ zIndex: 2 }}>
-          {/* Timeline spine */}
-          <div ref={spineRef} className="absolute left-[19px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-gold/40 via-gold/15 to-transparent pointer-events-none" />
-
           {entries.slice(0, 5).map((entry, index) => {
             const Icon = EVENT_ICONS[entry.type];
             const iconBgClass = EVENT_ICON_BG[entry.type];
