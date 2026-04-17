@@ -203,7 +203,7 @@ export default function CharacterSheet({
 
         {/* Sheet panel — aged oak */}
         <div
-          className="relative flex flex-col overflow-y-auto"
+          className="relative flex flex-col overflow-y-auto flex-1 min-h-0"
           style={{
             background: `${STONE_NOISE}, linear-gradient(170deg, #151418 0%, #0e0d12 100%)`,
             border: "1px solid rgba(160,125,55,0.45)",
@@ -226,12 +226,12 @@ export default function CharacterSheet({
           <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(200,168,75,0.45)] to-transparent" />
 
           {/* ── Header ── */}
-          <div className="relative flex items-center gap-3 md:gap-5 px-4 py-4 md:px-7 md:py-5 border-b border-[rgba(160,125,55,0.18)]" style={{ zIndex: 2 }}>
+          <div className="relative flex items-center gap-2 md:gap-5 px-3 py-2.5 md:px-7 md:py-5 border-b border-[rgba(160,125,55,0.18)]" style={{ zIndex: 2 }}>
             {/* Class icon in heraldic seal */}
             <div
               className="flex-shrink-0 flex items-center justify-center relative"
               style={{
-                width: "64px", height: "64px",
+                width: "52px", height: "52px",
                 background: "rgba(160,125,55,0.07)",
                 border: "1px solid rgba(160,125,55,0.35)",
               }}
@@ -255,10 +255,10 @@ export default function CharacterSheet({
                   Hoja de Personaje
                 </span>
               </div>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-[rgba(232,224,208,0.92)] leading-tight">
+              <h2 className="font-serif text-xl md:text-3xl font-bold text-[rgba(232,224,208,0.92)] leading-tight">
                 {studentName}
               </h2>
-              <p className="mt-1 font-serif text-[15px] text-[rgba(200,168,75,0.6)] tracking-wider">
+              <p className="mt-0.5 font-serif text-[13px] md:text-[15px] text-[rgba(200,168,75,0.6)] tracking-wider">
                 Nivel {level} · {levelName}
               </p>
               {classEntry && (
@@ -274,12 +274,12 @@ export default function CharacterSheet({
           {/* ── Body: radar + attributes ── */}
           <div className="relative flex" style={{ zIndex: 2 }}>
             {/* Radar */}
-            <div className="flex items-center justify-center p-3 md:p-6 flex-1 border-r border-[rgba(160,125,55,0.15)]">
+            <div className="flex items-center justify-center p-2 md:p-6 flex-1 border-r border-[rgba(160,125,55,0.15)]">
               <HexRadar scores={scores} />
             </div>
 
             {/* Attribute bars */}
-            <div className="flex flex-col justify-center gap-2 md:gap-3 p-3 md:p-6 flex-1">
+            <div className="flex flex-col justify-center gap-1.5 md:gap-3 p-2.5 md:p-6 flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[rgba(160,125,55,0.25)] to-transparent" />
                 <p className="text-[10px] font-serif uppercase tracking-[0.28em] text-[rgba(160,125,55,0.5)]">
@@ -293,16 +293,16 @@ export default function CharacterSheet({
                 const isClassAttr = classEntry?.attributes.includes(attr);
                 return (
                   <div key={attr}>
-                    <div className="flex justify-between items-baseline mb-1">
-                      <span className={`text-[13px] font-serif ${isClassAttr ? "text-[#c8a84b]" : "text-[rgba(160,125,55,0.5)]"}`}>
+                    <div className="flex justify-between items-baseline mb-0.5">
+                      <span className={`text-[11px] md:text-[13px] font-serif ${isClassAttr ? "text-[#c8a84b]" : "text-[rgba(160,125,55,0.5)]"}`}>
                         {attr}
                       </span>
-                      <span className="text-[13px] font-serif font-bold tabular-nums text-[rgba(232,224,208,0.7)]">
+                      <span className="text-[11px] md:text-[13px] font-serif font-bold tabular-nums text-[rgba(232,224,208,0.7)]">
                         {score}
                       </span>
                     </div>
                     {/* Attribute bar — straight edges */}
-                    <div className="h-1.5 w-full bg-[rgba(160,125,55,0.08)] border border-[rgba(160,125,55,0.15)] overflow-hidden">
+                    <div className="h-1 md:h-1.5 w-full bg-[rgba(160,125,55,0.08)] border border-[rgba(160,125,55,0.15)] overflow-hidden">
                       <div
                         className={`h-full ${
                           isClassAttr
@@ -321,21 +321,21 @@ export default function CharacterSheet({
           {/* ── Talents ── */}
           {talents.length > 0 && (
             <div
-              className="relative px-4 py-3 md:px-7 md:py-4"
+              className="relative px-3 py-2 md:px-7 md:py-4"
               style={{ borderTop: "1px solid rgba(160,125,55,0.18)", zIndex: 2 }}
             >
-              <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center gap-3 mb-2">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[rgba(160,125,55,0.25)] to-transparent" />
                 <p className="text-[10px] font-serif uppercase tracking-[0.28em] text-[rgba(160,125,55,0.5)]">
                   Talentos Activos
                 </p>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[rgba(160,125,55,0.25)] to-transparent" />
               </div>
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex flex-wrap gap-1.5 md:gap-2 justify-center">
                 {talents.map((t) => (
                   <span
                     key={t.id}
-                    className="border border-[rgba(160,125,55,0.28)] bg-[rgba(160,125,55,0.06)] px-3 py-1 text-[11px] font-serif uppercase tracking-[0.18em] text-[rgba(200,168,75,0.65)]"
+                    className="border border-[rgba(160,125,55,0.28)] bg-[rgba(160,125,55,0.06)] px-2.5 py-0.5 text-[10px] md:text-[11px] font-serif uppercase tracking-[0.15em] text-[rgba(200,168,75,0.65)]"
                   >
                     {t.name}
                   </span>
