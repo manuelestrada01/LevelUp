@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, EB_Garamond } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -54,6 +55,7 @@ export default function RootLayout({
         <div className="relative" style={{ zIndex: 1 }}>
           {children}
         </div>
+        <Analytics />
       </body>
     </html>
   );

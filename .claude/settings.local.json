@@ -40,7 +40,8 @@
       "Bash(npx --yes @_davideast/stitch-mcp doctor)",
       "Bash(cat \"C:/Users/jetsa/.claude/plugins/cache/claude-plugins-official/frontend-design/96a7f430bc8d/skills/\"*.md)",
       "Bash(ollama pull:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(git push:*)"
     ]
   }
 }
